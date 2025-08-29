@@ -1,32 +1,58 @@
-/* responsive grid for sections */
+/* --------- Section Cards Grid --------- */
 .ch-sections-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 20px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  display: grid; grid-template-columns: repeat(12, 1fr);
+  gap: 20px; list-style: none; padding: 0; margin: 0;
 }
 .ch-sections-grid > li { grid-column: span 12; }
 @media (min-width: 576px) { .ch-sections-grid > li { grid-column: span 6; } }
 @media (min-width: 992px) { .ch-sections-grid > li { grid-column: span 4; } }
 
-/* card */
-.ch-section-card { overflow: hidden; height: 100%; }
-.ch-card-cover { height: 120px; background-size: cover; background-position: center; }
+/* --------- Card --------- */
+.ch-section-card {
+  overflow: hidden; border-radius: 16px;
+  background: #fff; min-height: 148px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.05);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.ch-section-card:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,0,0,.08); }
 
-/* modal header banner */
+.ch-card-cover {
+  height: 110px; background-size: cover; background-position: center;
+}
+
+/* Gradient top if no cover */
+.ch-section-card .Card__header {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, var(--cogens-blue-1, #0E47F1), var(--cogens-blue-2, #177DFF));
+  color: #fff;
+}
+.ch-section-card .Card__body { padding: 16px; }
+.ch-section-card .h6 { font-weight: 700; margin: 0 0 6px; }
+.ch-section-card .text-muted.small { opacity: .8; }
+
+/* --------- Modal Banner --------- */
 .ch-banner-wrap { position: relative; width: 100%; }
-.ch-banner-img { height: 160px; background-size: cover; background-position: center; }
+.ch-banner-img, .ch-banner-fallback { height: 170px; }
 .ch-banner-fallback {
-  height: 160px;
   background: linear-gradient(135deg, var(--cogens-blue-1, #0E47F1), var(--cogens-blue-2, #177DFF));
 }
-.ch-banner-title {
-  position: absolute; left: 20px; bottom: 14px; right: 20px;
-  color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.35);
-}
+.ch-banner-title { position: absolute; left: 22px; bottom: 16px; right: 22px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.35); }
 
-/* list rows in modal */
+/* Modal rows */
 .ch-item-row { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,.06); }
 .ch-item-row:last-child { border-bottom: 0; }
+
+/* --------- Tabs polish (Course / Progress / Dates / Teams) --------- */
+.course-tabs .nav.nav-tabs { border-bottom: 0; gap: 12px; }
+.course-tabs .nav-link {
+  border: 0 !important; background: transparent !important;
+  padding: 10px 14px; border-radius: 10px;
+  color: #3a3a3a; font-weight: 600;
+}
+.course-tabs .nav-link.active {
+  color: #0e47f1; background: rgba(14,71,241,.08) !important;
+}
+.course-tabs .nav-link:focus-visible { outline: 2px solid #0e47f1; outline-offset: 2px; }
+
+/* Hide legacy expand-all row now that we use cards */
+#expand-button-row { display: none; }

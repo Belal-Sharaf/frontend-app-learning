@@ -5,6 +5,9 @@ const SectionCard = ({ index, title, meta, onOpen, coverUrl }) => {
   return (
     <button
       type="button"
+      role="link"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter') onOpen(); }}
       onClick={onOpen}
       className="w-100 text-start border-0 bg-transparent p-0"
       aria-label={`Open section ${index + 1}: ${title}`}
@@ -15,7 +18,8 @@ const SectionCard = ({ index, title, meta, onOpen, coverUrl }) => {
         ) : null}
 
         <Card.Header className="d-flex align-items-center justify-content-between">
-          <div className="small text-muted fw-semibold">{index + 1}</div>
+          {/* white text comes from header gradient */}
+          <div className="small fw-semibold">{index + 1}</div>
         </Card.Header>
 
         <Card.Body>

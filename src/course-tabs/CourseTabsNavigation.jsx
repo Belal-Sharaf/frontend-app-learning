@@ -15,30 +15,39 @@ const CourseTabsNavigation = ({
   const { show } = useCoursewareSearchState();
 
   return (
-    <div id="courseTabsNavigation" className={classNames('course-tabs-navigation', className)}>
+    <div
+      id="courseTabsNavigation"
+      className={classNames('course-tabs-navigation course-tabs', className)}
+    >
       <div className="container-xl">
-        <div className="nav-bar">
+        <div className="nav-bar d-flex align-items-center justify-content-between">
           <div className="nav-menu">
+            {/* Use nav + nav-tabs to match our SCSS selectors */}
             <Tabs
-              className="nav-underline-tabs"
+              className="nav nav-tabs"
               aria-label={intl.formatMessage(messages.courseMaterial)}
             >
               {tabs.map(({ url, title, slug }) => (
                 <a
                   key={slug}
-                  className={classNames('nav-item flex-shrink-0 nav-link', { active: slug === activeTabSlug })}
                   href={url}
+                  className={classNames(
+                    'nav-link',
+                    { active: slug === activeTabSlug },
+                  )}
                 >
                   {title}
                 </a>
               ))}
             </Tabs>
           </div>
-          <div className="search-toggle">
+
+          <div className="search-toggle ms-3">
             <CoursewareSearchToggle />
           </div>
         </div>
       </div>
+
       {show && <CoursewareSearch />}
     </div>
   );

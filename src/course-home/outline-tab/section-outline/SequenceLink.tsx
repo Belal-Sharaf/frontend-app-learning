@@ -5,6 +5,20 @@ import SequenceDueDate from './SequenceDueDate';
 import HiddenSequenceLink from './HiddenSequenceLink';
 import SequenceTitle from './SequenceTitle';
 
+export const getSequenceTo = (id, sequence) => {
+  // This should return the same `to` you pass to <Link /> inside SequenceLink.
+  // If SequenceLink builds `to` via a helper, just return that helper’s value.
+  // Example pattern (adjust to match your file):
+  //
+  // return {
+  //   pathname: `/learning/course/${sequence.courseId}/block-${id}`,
+  //   search: '',
+  // };
+  //
+  // ↑ Replace with whatever your component actually uses.
+  return sequence?.to || { pathname: sequence?.href || '#' };
+};
+
 interface Props {
   id: string;
   first: boolean;
