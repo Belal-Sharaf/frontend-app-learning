@@ -1,0 +1,32 @@
+/* responsive grid for sections */
+.ch-sections-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ch-sections-grid > li { grid-column: span 12; }
+@media (min-width: 576px) { .ch-sections-grid > li { grid-column: span 6; } }
+@media (min-width: 992px) { .ch-sections-grid > li { grid-column: span 4; } }
+
+/* card */
+.ch-section-card { overflow: hidden; height: 100%; }
+.ch-card-cover { height: 120px; background-size: cover; background-position: center; }
+
+/* modal header banner */
+.ch-banner-wrap { position: relative; width: 100%; }
+.ch-banner-img { height: 160px; background-size: cover; background-position: center; }
+.ch-banner-fallback {
+  height: 160px;
+  background: linear-gradient(135deg, var(--cogens-blue-1, #0E47F1), var(--cogens-blue-2, #177DFF));
+}
+.ch-banner-title {
+  position: absolute; left: 20px; bottom: 14px; right: 20px;
+  color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.35);
+}
+
+/* list rows in modal */
+.ch-item-row { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,.06); }
+.ch-item-row:last-child { border-bottom: 0; }
