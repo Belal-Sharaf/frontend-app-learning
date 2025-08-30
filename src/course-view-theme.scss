@@ -1,52 +1,68 @@
-/* ========== Course View Theme (styles only) ==========
-   Keeps markup/logic intact. Scoped to course home & courseware views.
-   ----------------------------------------------------- */
+/* ========== Course View Theme (alignment + brand, styles only) ==========
+   No JSX/logic changes. Targets Course Home + Courseware views.
+   ---------------------------------------------------------------------- */
 
 :root {
+  /* Brand */
   --brand-600: #0E47F1;
   --brand-500: #177DFF;
   --accent-400: #6BCEFF;
+
+  /* Neutrals & layout */
   --text-strong: #0B1220;
-  --text-muted: #5B6670;
-  --bg-soft: #F7F9FE;
-  --surface: #FFFFFF;
-  --border: rgba(16, 24, 40, 0.12);
-  --ring: rgba(14, 71, 241, 0.18);
+  --text-muted:  #5B6670;
+  --bg-soft:     #F7F9FE;
+  --surface:     #FFFFFF;
+  --border:      rgba(16, 24, 40, 0.12);
+  --ring:        rgba(14, 71, 241, 0.18);
+
+  /* Rhythm */
   --radius-lg: 14px;
   --radius-md: 10px;
   --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
   --shadow-md: 0 12px 24px rgba(16,24,40,.08);
+
+  /* Alignment system */
+  --page-max: 1280px;
+  --gutter:   24px;   /* base horizontal gutter */
+  --rail-w:   320px;  /* right rail target width on desktop */
 }
 
-/* Background & container breathing room */
+/* ---------- Page background & container cadence ---------- */
 body.course,
 body.courseware,
 body[class*="tab-page"] {
   background: var(--bg-soft);
 }
+
 .container-xl {
-  padding-left: clamp(12px, 2vw, 24px);
-  padding-right: clamp(12px, 2vw, 24px);
+  max-width: var(--page-max);
+  padding-left: clamp(12px, 2vw, var(--gutter));
+  padding-right: clamp(12px, 2vw, var(--gutter));
 }
 
-/* =======================================================
-   A) COURSE TABS BAR (brand colors + no "More…" UI)
-   ======================================================= */
+/* If Bootstrap 5 is present (Paragon), normalize gutters */
+.tab-page .row { --bs-gutter-x: var(--gutter); }
+
+/* ======================================================================
+   1) HEADER / TABS / TITLE  (alignment + brand)
+   ====================================================================== */
 #courseTabsNavigation.course-tabs-navigation .nav-bar {
   border-bottom: 1px solid rgba(16,24,40,.10);
-  padding: 12px 0;
+  padding: 10px 0;               /* slightly tighter */
+  margin-bottom: 8px;            /* gives room before H1 */
 }
 
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs {
   display: inline-flex;
-  gap: 14px;                 /* a bit tighter so overflow is rarer */
   align-items: center;
+  gap: 14px;
   white-space: nowrap;
-  overflow-x: auto;          /* graceful on small screens */
+  overflow-x: auto;              /* graceful on small screens */
   -webkit-overflow-scrolling: touch;
 }
 
-/* Brand coloring for tabs */
+/* Tab links */
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a {
   position: relative;
   display: inline-flex;
@@ -54,10 +70,11 @@ body[class*="tab-page"] {
   height: 40px;
   padding: 0 6px;
   text-decoration: none;
-  color: var(--text-muted);
   font-weight: 600;
   line-height: 1;
+  color: var(--text-muted);
   border-radius: 8px;
+  transition: color 120ms ease;
 }
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:hover,
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus {
@@ -77,68 +94,109 @@ body[class*="tab-page"] {
   border-radius: 2px;
 }
 
-/* Hide the overflow dropdown ("More…") if present */
-#courseTabsNavigation .nav-underline-tabs .dropdown,
-#courseTabsNavigation .nav-underline-tabs .dropdown-toggle,
-#courseTabsNavigation .nav-underline-tabs [aria-haspopup="menu"],
-#courseTabsNavigation .nav-underline-tabs [data-testid*="overflow"],
-#courseTabsNavigation .nav-underline-tabs .dropdown-menu {
-  display: none !important;
-}
-
-/* Compact when the search is open (class is already toggled in code) */
+/* Compact when course search is open */
 #courseTabsNavigation.course-tabs-navigation.has-search-open .nav-bar {
   padding-top: 6px !important;
   padding-bottom: 6px !important;
   border-bottom-color: rgba(16, 24, 40, 0.08);
 }
 
-/* =======================================================
-   B) COURSE HOME → OUTLINE TAB (section list/cards)
-   ======================================================= */
+/* Course page H1: consistent spacing with tabs */
+.tab-page h1, .tab-page .h1 {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  color: var(--text-strong);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* ======================================================================
+   2) “Pick up / Resume” banner (grid inside card, aligned CTA)
+   ====================================================================== */
+[class*="StartOrResumeCourseCard"],
+[class*="WelcomeMessage"] {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+}
+
+[class*="StartOrResumeCourseCard"] .card,
+[class*="WelcomeMessage"] .card,
+[class*="StartOrResumeCourseCard"] .container,
+[class*="WelcomeMessage"] .container {
+  /* defensive: ensure inner wrapper behaves like a grid */
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+
+/* keep copy readable; trim overly long lines */
+[class*="StartOrResumeCourseCard"] p,
+[class*="WelcomeMessage"] p { max-width: 60ch; }
+
+/* Primary CTA pill sizing */
+[class*="StartOrResumeCourseCard"] .btn-primary,
+[class*="WelcomeMessage"] .btn-primary {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--brand-600);
+  border-color: var(--brand-600);
+}
+[class*="StartOrResumeCourseCard"] .btn-primary:hover,
+[class*="WelcomeMessage"] .btn-primary:hover {
+  background: var(--brand-500);
+  border-color: var(--brand-500);
+}
+
+/* Dismiss link quieter */
+[class*="WelcomeMessage"] a[href*="dismiss"],
+[class*="WelcomeMessage"] button[aria-label*="Dismiss"] {
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+
+/* ======================================================================
+   3) OUTLINE (modules & items) — card rhythm + row grid
+   ====================================================================== */
 .section-outline, [class*="section-outline"] {
   display: grid;
   gap: 12px;
 }
+
+/* Module card */
 .section-outline .section,
 [class*="section-outline"] .section {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
 }
-.section-outline .section:hover,
-[class*="section-outline"] .section:hover {
-  border-color: var(--brand-500);
-  box-shadow: 0 0 0 3px var(--ring);
-}
+
+/* Module header row */
 .section-outline .section .section-title,
 [class*="section-outline"] .section [class*="SectionTitle"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;   /* title vs. collapse icon */
+  gap: 12px;
+  padding: 14px 16px;               /* uniform inner padding */
   font-weight: 700;
   color: var(--text-strong);
 }
 
-/* Sequences inside a section */
-.section-outline .sequence-link,
-[class*="section-outline"] [class*="SequenceLink"] {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-top: 1px dashed rgba(16,24,40,.12);
-}
-.section-outline .sequence-link:hover,
-[class*="section-outline"] [class*="SequenceLink"]:hover {
-  background: rgba(14, 71, 241, 0.045);
-}
-
-/* “Expand all” button style nudge */
+/* Collapse all button (outline level) */
 button.btn-outline-primary,
 a.btn.btn-outline-primary {
   border-color: var(--brand-600);
   color: var(--brand-600);
+  border-radius: 999px;
+  padding: 6px 12px;
+  line-height: 1;
 }
 button.btn-outline-primary:hover,
 a.btn.btn-outline-primary:hover {
@@ -146,75 +204,85 @@ a.btn.btn-outline-primary:hover {
   color: #fff;
 }
 
-/* =======================================================
-   C) IN-UNIT VIEW (left nav + content card)
-   — Scope sticky ONLY to the left sidebar so Prev/Next stay normal.
-   ======================================================= */
-
-/* Left column (sidebar) */
-.courseware .sidebar,
-.courseware [class*="SidebarBase"],
-.courseware [class*="CourseOutlineTray"] {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  position: sticky;
-  top: 72px;                 /* adjust if your global header differs */
-  height: calc(100vh - 88px);
-  overflow: auto;
-}
-
-/* Row buttons INSIDE the sidebar only */
-.courseware .sidebar .unit-button,
-.courseware [class*="Sidebar"] .unit-button,
-.courseware [class*="Sidebar"] [class*="UnitButton"] {
-  display: flex;
+/* Sequence rows inside module */
+.section-outline .sequence-link,
+[class*="section-outline"] [class*="SequenceLink"] {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;  /* icon | label | meta/chevron */
   align-items: center;
   gap: 10px;
-  min-height: 48px;
-  padding: 8px 12px;
-  margin: 6px 8px;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 12px 16px;
+  border-top: 1px dashed rgba(16,24,40,.12);
+  min-height: 44px;
+}
+.section-outline .sequence-link:hover,
+[class*="section-outline"] [class*="SequenceLink"]:hover {
+  background: rgba(14, 71, 241, 0.045);
+}
+
+/* Secondary line under a sequence title */
+.section-outline .sequence-link small,
+[class*="section-outline"] [class*="SequenceLink"] small {
   color: var(--text-muted);
 }
-.courseware .sidebar .unit-button:hover,
-.courseware [class*="Sidebar"] .unit-button:hover,
-.courseware [class*="Sidebar"] [class*="UnitButton"]:hover {
-  background: rgba(14, 71, 241, 0.06);
-  color: var(--text-strong);
+
+/* Hover ring for whole module */
+.section-outline .section:hover,
+[class*="section-outline"] .section:hover {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px var(--ring);
 }
 
-/* Selected row in the sidebar */
-.courseware .sidebar .unit-button.active,
-.courseware [class*="Sidebar"] .unit-button.active,
-.courseware [class*="Sidebar"] [class*="UnitButton"][aria-current="true"] {
-  background: rgba(14, 71, 241, 0.12);
-  color: var(--brand-600);
-  border: 1px solid rgba(14, 71, 241, 0.22);
+/* ======================================================================
+   4) RIGHT RAIL — consistent width & sticky on desktop
+   ====================================================================== */
+@media (min-width: 992px) {
+  /* Most Paragon/Bootstrap layouts render a .row with two columns.
+     Make the right rail cards sticky without touching the grid markup. */
+  [class*="CourseTools"],
+  [class*="CourseHandouts"] {
+    position: sticky;
+    top: 96px;                        /* below the site header */
+  }
+  /* Normalize card look in the rail */
+  [class*="CourseTools"] .card,
+  [class*="CourseHandouts"] .card,
+  [class*="CourseTools"],
+  [class*="CourseHandouts"] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 14px;
+  }
 }
 
-/* Main content card */
-.sequence-container,
-[class*="SequenceContent"],
-[class*="UnitSuspense"] ~ div {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  padding: clamp(16px, 2vw, 28px);
+/* ======================================================================
+   5) GLOBAL buttons/links/focus (brand)
+   ====================================================================== */
+a, .link-primary { color: var(--brand-600); }
+a:hover, .link-primary:hover { color: var(--brand-500); }
+
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
 }
 
-/* Headings & light meta */
-.sequence-container h1, .sequence-container h2,
-[class*="SequenceContent"] h1, [class*="SequenceContent"] h2 {
-  color: var(--text-strong);
+.btn-primary,
+button.btn-primary,
+a.btn.btn-primary {
+  background: var(--brand-600);
+  border-color: var(--brand-600);
 }
-a[href*="bookmark"] {
-  color: var(--brand-600);
-  font-weight: 600;
-}
+.btn-primary:hover { background: var(--brand-500); border-color: var(--brand-500); }
 
-/* Make debug/info buttons calmer */
+/* ======================================================================
+   6) MICRO-RHYTHM & CALM INFO BADGES
+   ====================================================================== */
+[class*="StartOrResumeCourseCard"],
+[class*="WelcomeMessage"],
+.section-outline .section { transition: box-shadow 120ms ease, border-color 120ms ease; }
+
 a, button {
   &.btn-outline-info, &.btn-info { filter: saturate(.9) opacity(.92); }
 }
