@@ -36,3 +36,23 @@
 
 
 }
+
+
+/* Stronger underline + spacing (style-only, no JSX changes) */
+#courseTabsNavigation.course-tabs-navigation {
+  .nav-bar { border-bottom: 1px solid rgba(16,24,40,.10); padding: 12px 0; }
+  .nav-underline-tabs { gap: 18px; }
+  .nav-underline-tabs a {
+    font-weight: 600;
+    color: var(--text-muted, #5B6670);
+    position: relative;
+  }
+  .nav-underline-tabs a.active,
+  .nav-underline-tabs a[aria-current="page"] { color: var(--brand-600, #0E47F1); }
+  .nav-underline-tabs a.active::after,
+  .nav-underline-tabs a[aria-current="page"]::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -2px;
+    height: 2px; background: currentColor; border-radius: 2px;
+  }
+}

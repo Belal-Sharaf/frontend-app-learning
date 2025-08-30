@@ -1,0 +1,207 @@
+/* ========== Course View Theme (styles only) ==========
+   Keeps markup/logic intact. Scoped to course home & courseware views.
+   ----------------------------------------------------- */
+
+:root {
+  --brand-600: #0E47F1;
+  --brand-500: #177DFF;
+  --accent-400: #6BCEFF;
+  --text-strong: #0B1220;
+  --text-muted: #5B6670;
+  --bg-soft: #F7F9FE;
+  --surface: #FFFFFF;
+  --border: rgba(16, 24, 40, 0.12);
+  --ring: rgba(14, 71, 241, 0.18);
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
+  --shadow-md: 0 12px 24px rgba(16,24,40,.08);
+}
+
+/* Background & container breathing room */
+body.course,
+body.courseware,
+body[class*="tab-page"] {
+  background: var(--bg-soft);
+}
+.container-xl {
+  padding-left: clamp(12px, 2vw, 24px);
+  padding-right: clamp(12px, 2vw, 24px);
+}
+
+/* =======================================================
+   A) COURSE TABS BAR (works with existing markup)
+   ======================================================= */
+#courseTabsNavigation.course-tabs-navigation .nav-bar {
+  border-bottom: 1px solid rgba(16,24,40,.10);
+  padding: 12px 0;
+}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs {
+  display: inline-flex;
+  gap: 18px;
+  align-items: center;
+  white-space: nowrap;
+}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 6px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 8px;
+}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:hover,
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus {
+  color: var(--brand-600);
+}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active,
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"] {
+  color: var(--brand-600);
+}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active::after,
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+/* Compact when the search is open (class is already toggled in code) */
+#courseTabsNavigation.course-tabs-navigation.has-search-open .nav-bar {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  border-bottom-color: rgba(16, 24, 40, 0.08);
+}
+
+/* =======================================================
+   B) COURSE HOME → OUTLINE TAB (section list/cards)
+   Defensive selectors to avoid JSX edits.
+   ======================================================= */
+.section-outline, [class*="section-outline"] {
+  display: grid;
+  gap: 12px;
+}
+.section-outline .section,
+[class*="section-outline"] .section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.section-outline .section:hover,
+[class*="section-outline"] .section:hover {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+.section-outline .section .section-title,
+[class*="section-outline"] .section [class*="SectionTitle"] {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+/* Sequences inside a section */
+.section-outline .sequence-link,
+[class*="section-outline"] [class*="SequenceLink"] {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px dashed rgba(16,24,40,.12);
+}
+.section-outline .sequence-link:hover,
+[class*="section-outline"] [class*="SequenceLink"]:hover {
+  background: rgba(14, 71, 241, 0.045);
+}
+
+/* “Expand all” button style nudge */
+button.btn-outline-primary,
+a.btn.btn-outline-primary {
+  border-color: var(--brand-600);
+  color: var(--brand-600);
+}
+button.btn-outline-primary:hover,
+a.btn.btn-outline-primary:hover {
+  background: var(--brand-600);
+  color: #fff;
+}
+
+/* =======================================================
+   C) IN-UNIT VIEW (left nav + content card)
+   ======================================================= */
+
+/* Left column (unit list) */
+.unit-navigation,
+.sequence-navigation,
+[class*="UnitNavigation"],
+[class*="SequenceNavigation"] {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 72px;                 /* adjust if your global header differs */
+  height: calc(100vh - 88px);
+  overflow: auto;
+}
+
+/* Row buttons */
+.unit-navigation .unit-button,
+.sequence-navigation .unit-button,
+[class*="UnitNavigation"] [class*="UnitButton"] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 12px;
+  margin: 6px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.unit-navigation .unit-button:hover,
+.sequence-navigation .unit-button:hover,
+[class*="UnitNavigation"] [class*="UnitButton"]:hover {
+  background: rgba(14, 71, 241, 0.06);
+  color: var(--text-strong);
+}
+
+/* Selected row */
+.unit-navigation .unit-button.active,
+.sequence-navigation .unit-button.active,
+[class*="UnitNavigation"] [class*="UnitButton"][aria-current="true"] {
+  background: rgba(14, 71, 241, 0.12);
+  color: var(--brand-600);
+  border: 1px solid rgba(14, 71, 241, 0.22);
+}
+
+/* Main content card */
+.sequence-container,
+[class*="SequenceContent"],
+[class*="UnitSuspense"] ~ div {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: clamp(16px, 2vw, 28px);
+}
+
+/* Headings & light meta */
+.sequence-container h1, .sequence-container h2,
+[class*="SequenceContent"] h1, [class*="SequenceContent"] h2 {
+  color: var(--text-strong);
+}
+a[href*="bookmark"] {
+  color: var(--brand-600);
+  font-weight: 600;
+}
+
+/* Make debug/info buttons calmer */
+a, button {
+  &.btn-outline-info, &.btn-info { filter: saturate(.9) opacity(.92); }
+}
