@@ -30,18 +30,23 @@ body[class*="tab-page"] {
 }
 
 /* =======================================================
-   A) COURSE TABS BAR (works with existing markup)
+   A) COURSE TABS BAR (brand colors + no "More…" UI)
    ======================================================= */
 #courseTabsNavigation.course-tabs-navigation .nav-bar {
   border-bottom: 1px solid rgba(16,24,40,.10);
   padding: 12px 0;
 }
+
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs {
   display: inline-flex;
-  gap: 18px;
+  gap: 14px;                 /* a bit tighter so overflow is rarer */
   align-items: center;
   white-space: nowrap;
+  overflow-x: auto;          /* graceful on small screens */
+  -webkit-overflow-scrolling: touch;
 }
+
+/* Brand coloring for tabs */
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a {
   position: relative;
   display: inline-flex;
@@ -72,6 +77,15 @@ body[class*="tab-page"] {
   border-radius: 2px;
 }
 
+/* Hide the overflow dropdown ("More…") if present */
+#courseTabsNavigation .nav-underline-tabs .dropdown,
+#courseTabsNavigation .nav-underline-tabs .dropdown-toggle,
+#courseTabsNavigation .nav-underline-tabs [aria-haspopup="menu"],
+#courseTabsNavigation .nav-underline-tabs [data-testid*="overflow"],
+#courseTabsNavigation .nav-underline-tabs .dropdown-menu {
+  display: none !important;
+}
+
 /* Compact when the search is open (class is already toggled in code) */
 #courseTabsNavigation.course-tabs-navigation.has-search-open .nav-bar {
   padding-top: 6px !important;
@@ -81,7 +95,6 @@ body[class*="tab-page"] {
 
 /* =======================================================
    B) COURSE HOME → OUTLINE TAB (section list/cards)
-   Defensive selectors to avoid JSX edits.
    ======================================================= */
 .section-outline, [class*="section-outline"] {
   display: grid;
@@ -135,13 +148,13 @@ a.btn.btn-outline-primary:hover {
 
 /* =======================================================
    C) IN-UNIT VIEW (left nav + content card)
+   — Scope sticky ONLY to the left sidebar so Prev/Next stay normal.
    ======================================================= */
 
-/* Left column (unit list) */
-.unit-navigation,
-.sequence-navigation,
-[class*="UnitNavigation"],
-[class*="SequenceNavigation"] {
+/* Left column (sidebar) */
+.courseware .sidebar,
+.courseware [class*="SidebarBase"],
+.courseware [class*="CourseOutlineTray"] {
   background: var(--surface);
   border-right: 1px solid var(--border);
   position: sticky;
@@ -150,10 +163,10 @@ a.btn.btn-outline-primary:hover {
   overflow: auto;
 }
 
-/* Row buttons */
-.unit-navigation .unit-button,
-.sequence-navigation .unit-button,
-[class*="UnitNavigation"] [class*="UnitButton"] {
+/* Row buttons INSIDE the sidebar only */
+.courseware .sidebar .unit-button,
+.courseware [class*="Sidebar"] .unit-button,
+.courseware [class*="Sidebar"] [class*="UnitButton"] {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -164,17 +177,17 @@ a.btn.btn-outline-primary:hover {
   font-weight: 600;
   color: var(--text-muted);
 }
-.unit-navigation .unit-button:hover,
-.sequence-navigation .unit-button:hover,
-[class*="UnitNavigation"] [class*="UnitButton"]:hover {
+.courseware .sidebar .unit-button:hover,
+.courseware [class*="Sidebar"] .unit-button:hover,
+.courseware [class*="Sidebar"] [class*="UnitButton"]:hover {
   background: rgba(14, 71, 241, 0.06);
   color: var(--text-strong);
 }
 
-/* Selected row */
-.unit-navigation .unit-button.active,
-.sequence-navigation .unit-button.active,
-[class*="UnitNavigation"] [class*="UnitButton"][aria-current="true"] {
+/* Selected row in the sidebar */
+.courseware .sidebar .unit-button.active,
+.courseware [class*="Sidebar"] .unit-button.active,
+.courseware [class*="Sidebar"] [class*="UnitButton"][aria-current="true"] {
   background: rgba(14, 71, 241, 0.12);
   color: var(--brand-600);
   border: 1px solid rgba(14, 71, 241, 0.22);

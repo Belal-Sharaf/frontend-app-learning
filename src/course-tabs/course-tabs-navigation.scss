@@ -56,3 +56,46 @@
     height: 2px; background: currentColor; border-radius: 2px;
   }
 }
+
+/* ===== Fixed tab bar (no overflow dropdown) ===== */
+#courseTabsNavigation.course-tabs-navigation {
+  .nav-underline-tabs.tabs-no-overflow {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    white-space: nowrap;
+    overflow-x: auto;               /* graceful on very small screens */
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(16,24,40,.10);
+  }
+
+  .tabs-no-overflow .tab-link {
+    position: relative;
+    padding: 8px 4px;
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text-muted, #5B6670);
+  }
+
+  .tabs-no-overflow .tab-link:hover,
+  .tabs-no-overflow .tab-link:focus {
+    color: var(--brand-600, #0E47F1);
+  }
+
+  .tabs-no-overflow .tab-link.active {
+    color: var(--brand-600, #0E47F1);
+  }
+  .tabs-no-overflow .tab-link.active::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -6px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+
+  &.has-search-open .nav-underline-tabs { padding-top: 6px; padding-bottom: 6px; }
+}
+
