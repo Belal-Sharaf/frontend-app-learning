@@ -1,9 +1,9 @@
-/* ========== Course View Theme (alignment + brand, styles only) ==========
-   No JSX/logic changes. Targets Course Home + Courseware views.
-   ---------------------------------------------------------------------- */
+/* ========== Course View Theme (alignment + Cogens brand, styles only) ========== */
+/* No JSX/logic changes. Targets Course Home + Courseware views. */
 
 :root {
   /* Brand */
+  --brand-700: #0E47F1;
   --brand-600: #0E47F1;
   --brand-500: #177DFF;
   --accent-400: #6BCEFF;
@@ -22,18 +22,16 @@
   --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
   --shadow-md: 0 12px 24px rgba(16,24,40,.08);
 
-  /* Alignment system */
+  /* Grid */
   --page-max: 1280px;
-  --gutter:   24px;   /* base horizontal gutter */
-  --rail-w:   320px;  /* right rail target width on desktop */
+  --gutter:   24px;
+  --rail-w:   320px;
 }
 
-/* ---------- Page background & container cadence ---------- */
+/* ---------- Page background & container ---------- */
 body.course,
 body.courseware,
-body[class*="tab-page"] {
-  background: var(--bg-soft);
-}
+body[class*="tab-page"] { background: var(--bg-soft); }
 
 .container-xl {
   max-width: var(--page-max);
@@ -41,16 +39,28 @@ body[class*="tab-page"] {
   padding-right: clamp(12px, 2vw, var(--gutter));
 }
 
-/* If Bootstrap 5 is present (Paragon), normalize gutters */
-.tab-page .row { --bs-gutter-x: var(--gutter); }
+/* Lock the main two-column grid on wide screens (content | rail) */
+@media (min-width: 1200px) {
+  .tab-page .container-xl > .row:first-child {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) var(--rail-w);
+    column-gap: var(--gutter);
+  }
+  /* remove inner col padding so edges align perfectly */
+  .tab-page .container-xl > .row:first-child > [class^="col"],
+  .tab-page .container-xl > .row:first-child > [class*=" col"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
 
-/* ======================================================================
-   1) HEADER / TABS / TITLE  (alignment + brand)
-   ====================================================================== */
+/* =========================================================
+   TABS / TITLE — aligned and on-brand
+   ========================================================= */
 #courseTabsNavigation.course-tabs-navigation .nav-bar {
   border-bottom: 1px solid rgba(16,24,40,.10);
-  padding: 10px 0;               /* slightly tighter */
-  margin-bottom: 8px;            /* gives room before H1 */
+  padding: 8px 0;
+  margin-bottom: 8px;
 }
 
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs {
@@ -58,11 +68,10 @@ body[class*="tab-page"] {
   align-items: center;
   gap: 14px;
   white-space: nowrap;
-  overflow-x: auto;              /* graceful on small screens */
+  overflow-x: auto; /* graceful on small screens */
   -webkit-overflow-scrolling: touch;
 }
 
-/* Tab links */
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a {
   position: relative;
   display: inline-flex;
@@ -77,42 +86,25 @@ body[class*="tab-page"] {
   transition: color 120ms ease;
 }
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:hover,
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus {
-  color: var(--brand-600);
-}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus { color: var(--brand-600); }
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active,
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"] {
-  color: var(--brand-600);
-}
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active::after,
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"]::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -2px;
-  height: 2px;
-  background: currentColor;
-  border-radius: 2px;
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"] { color: var(--brand-600); }
+
+/* Course page H1 spacing */
+.tab-page h1, .tab-page .h1 {
+  margin-top: 12px; margin-bottom: 12px;
+  color: var(--text-strong); font-weight: 800; letter-spacing: -0.01em;
 }
 
 /* Compact when course search is open */
 #courseTabsNavigation.course-tabs-navigation.has-search-open .nav-bar {
-  padding-top: 6px !important;
-  padding-bottom: 6px !important;
+  padding-top: 6px !important; padding-bottom: 6px !important;
   border-bottom-color: rgba(16, 24, 40, 0.08);
 }
 
-/* Course page H1: consistent spacing with tabs */
-.tab-page h1, .tab-page .h1 {
-  margin-top: 12px;
-  margin-bottom: 12px;
-  color: var(--text-strong);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-/* ======================================================================
-   2) “Pick up / Resume” banner (grid inside card, aligned CTA)
-   ====================================================================== */
+/* =========================================================
+   “Pick up / Resume” banner — grid inside card
+   ========================================================= */
 [class*="StartOrResumeCourseCard"],
 [class*="WelcomeMessage"] {
   background: var(--surface);
@@ -121,168 +113,179 @@ body[class*="tab-page"] {
   box-shadow: var(--shadow-sm);
   padding: 16px;
 }
-
 [class*="StartOrResumeCourseCard"] .card,
 [class*="WelcomeMessage"] .card,
 [class*="StartOrResumeCourseCard"] .container,
 [class*="WelcomeMessage"] .container {
-  /* defensive: ensure inner wrapper behaves like a grid */
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 16px;
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;
 }
-
-/* keep copy readable; trim overly long lines */
 [class*="StartOrResumeCourseCard"] p,
 [class*="WelcomeMessage"] p { max-width: 60ch; }
 
-/* Primary CTA pill sizing */
 [class*="StartOrResumeCourseCard"] .btn-primary,
 [class*="WelcomeMessage"] .btn-primary {
-  min-height: 40px;
-  padding: 0 16px;
-  border-radius: 999px;
-  background: var(--brand-600);
-  border-color: var(--brand-600);
+  min-height: 40px; padding: 0 16px; border-radius: 999px;
+  background: var(--brand-600); border-color: var(--brand-600);
 }
 [class*="StartOrResumeCourseCard"] .btn-primary:hover,
-[class*="WelcomeMessage"] .btn-primary:hover {
-  background: var(--brand-500);
-  border-color: var(--brand-500);
-}
+[class*="WelcomeMessage"] .btn-primary:hover { background: var(--brand-500); border-color: var(--brand-500); }
 
-/* Dismiss link quieter */
 [class*="WelcomeMessage"] a[href*="dismiss"],
-[class*="WelcomeMessage"] button[aria-label*="Dismiss"] {
-  color: var(--text-muted);
-  text-decoration: underline;
-}
+[class*="WelcomeMessage"] button[aria-label*="Dismiss"] { color: var(--text-muted); text-decoration: underline; }
 
-/* ======================================================================
-   3) OUTLINE (modules & items) — card rhythm + row grid
-   ====================================================================== */
-.section-outline, [class*="section-outline"] {
-  display: grid;
-  gap: 12px;
-}
+/* =========================================================
+   OUTLINE — module cards & tidy sequence rows
+   ========================================================= */
+.section-outline, [class*="section-outline"] { display: grid; gap: 12px; }
 
 /* Module card */
 .section-outline .section,
 [class*="section-outline"] .section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 
 /* Module header row */
 .section-outline .section .section-title,
 [class*="section-outline"] .section [class*="SectionTitle"] {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;   /* title vs. collapse icon */
-  gap: 12px;
-  padding: 14px 16px;               /* uniform inner padding */
-  font-weight: 700;
-  color: var(--text-strong);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 14px 16px; font-weight: 700; color: var(--text-strong);
 }
 
-/* Collapse all button (outline level) */
-button.btn-outline-primary,
-a.btn.btn-outline-primary {
-  border-color: var(--brand-600);
-  color: var(--brand-600);
-  border-radius: 999px;
-  padding: 6px 12px;
-  line-height: 1;
+/* Outline toolbar button (Expand/Collapse all) aligned to content edge */
+.tab-page .btn-outline-primary {
+  border-color: var(--brand-600); color: var(--brand-600);
+  border-radius: 999px; padding: 6px 12px; line-height: 1;
 }
-button.btn-outline-primary:hover,
-a.btn.btn-outline-primary:hover {
-  background: var(--brand-600);
-  color: #fff;
-}
+.tab-page .btn-outline-primary:hover { background: var(--brand-600); color: #fff; }
 
-/* Sequence rows inside module */
+/* Sequence rows */
 .section-outline .sequence-link,
 [class*="section-outline"] [class*="SequenceLink"] {
-  display: grid;
-  grid-template-columns: 24px 1fr auto;  /* icon | label | meta/chevron */
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-top: 1px dashed rgba(16,24,40,.12);
-  min-height: 44px;
+  display: grid; grid-template-columns: 24px 1fr auto;
+  align-items: center; gap: 10px; padding: 12px 16px;
+  border-top: 1px dashed rgba(16,24,40,.12); min-height: 44px;
 }
 .section-outline .sequence-link:hover,
-[class*="section-outline"] [class*="SequenceLink"]:hover {
-  background: rgba(14, 71, 241, 0.045);
-}
-
-/* Secondary line under a sequence title */
+[class*="section-outline"] [class*="SequenceLink"]:hover { background: rgba(14, 71, 241, .045); }
 .section-outline .sequence-link small,
-[class*="section-outline"] [class*="SequenceLink"] small {
-  color: var(--text-muted);
-}
+[class*="section-outline"] [class*="SequenceLink"] small { color: var(--text-muted); }
 
 /* Hover ring for whole module */
 .section-outline .section:hover,
-[class*="section-outline"] .section:hover {
-  border-color: var(--brand-500);
-  box-shadow: 0 0 0 3px var(--ring);
-}
+[class*="section-outline"] .section:hover { border-color: var(--brand-500); box-shadow: 0 0 0 3px var(--ring); }
 
-/* ======================================================================
-   4) RIGHT RAIL — consistent width & sticky on desktop
-   ====================================================================== */
-@media (min-width: 992px) {
-  /* Most Paragon/Bootstrap layouts render a .row with two columns.
-     Make the right rail cards sticky without touching the grid markup. */
+/* =========================================================
+   RIGHT RAIL — consistent width & sticky
+   ========================================================= */
+@media (min-width: 1200px) {
   [class*="CourseTools"],
-  [class*="CourseHandouts"] {
-    position: sticky;
-    top: 96px;                        /* below the site header */
-  }
-  /* Normalize card look in the rail */
+  [class*="CourseHandouts"] { position: sticky; top: 96px; }
+
+  [class*="CourseTools"],
+  [class*="CourseHandouts"],
   [class*="CourseTools"] .card,
-  [class*="CourseHandouts"] .card,
-  [class*="CourseTools"],
-  [class*="CourseHandouts"] {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    padding: 14px;
+  [class*="CourseHandouts"] .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 14px;
   }
+  /* brand icons/links */
+  [class*="CourseTools"] a, [class*="CourseHandouts"] a { color: var(--brand-600); }
+  [class*="CourseTools"] a:hover, [class*="CourseHandouts"] a:hover { color: var(--brand-500); }
 }
 
-/* ======================================================================
-   5) GLOBAL buttons/links/focus (brand)
-   ====================================================================== */
+/* =========================================================
+   GLOBAL buttons/links/focus — brand
+   ========================================================= */
 a, .link-primary { color: var(--brand-600); }
 a:hover, .link-primary:hover { color: var(--brand-500); }
+:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
 
-:focus-visible {
-  outline: 2px solid var(--brand-500);
-  outline-offset: 2px;
-}
-
-.btn-primary,
-button.btn-primary,
-a.btn.btn-primary {
-  background: var(--brand-600);
-  border-color: var(--brand-600);
+.btn-primary, button.btn-primary, a.btn.btn-primary {
+  background: var(--brand-600); border-color: var(--brand-600);
 }
 .btn-primary:hover { background: var(--brand-500); border-color: var(--brand-500); }
 
-/* ======================================================================
-   6) MICRO-RHYTHM & CALM INFO BADGES
-   ====================================================================== */
-[class*="StartOrResumeCourseCard"],
-[class*="WelcomeMessage"],
-.section-outline .section { transition: box-shadow 120ms ease, border-color 120ms ease; }
+/* Info pills calmer */
+a, button { &.btn-outline-info, &.btn-info { filter: saturate(.9) opacity(.92); } }
 
-a, button {
-  &.btn-outline-info, &.btn-info { filter: saturate(.9) opacity(.92); }
+/* =======================================================================
+   ======= Minimal gradient accents (Cogens) — add-on layer =======
+   ======================================================================= */
+/* Tokens */
+:root {
+  --g-primary: linear-gradient(90deg, var(--brand-600), var(--brand-500));
+  --g-primary-rev: linear-gradient(90deg, var(--brand-500), var(--brand-600));
+  --g-soft-wash: linear-gradient(180deg, rgba(14,71,241,0.06), rgba(14,71,241,0) 42%);
 }
+
+/* A) Tabs: gradient underline on hover + active */
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a { position: relative; }
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 2px; border-radius: 2px;
+  background-image: var(--g-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+/* show on hover/focus */
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:hover::after,
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus::after {
+  transform: scaleX(1); opacity: 1;
+}
+/* keep visible for active tab (override any flat underline) */
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active::after,
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"]::after {
+  transform: scaleX(1);
+  opacity: 1;
+  background: none;
+  background-image: var(--g-primary);
+}
+
+/* B) Resume CTA: gradient fill (reverses on hover) */
+[class*="StartOrResumeCourseCard"] .btn-primary,
+[class*="WelcomeMessage"] .btn-primary {
+  background: none;
+  background-image: var(--g-primary);
+  border: 0;
+  color: #fff;
+}
+[class*="StartOrResumeCourseCard"] .btn-primary:hover,
+[class*="WelcomeMessage"] .btn-primary:hover {
+  background-image: var(--g-primary-rev);
+}
+
+/* C) Banner: soft gradient wash in the background */
+[class*="StartOrResumeCourseCard"],
+[class*="WelcomeMessage"] {
+  position: relative;
+  overflow: hidden; /* keep the wash inside the card */
+}
+[class*="StartOrResumeCourseCard"]::before,
+[class*="WelcomeMessage"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--g-soft-wash);
+  pointer-events: none;
+  z-index: 0;
+}
+/* ensure inner content sits above the wash */
+[class*="StartOrResumeCourseCard"] > *,
+[class*="WelcomeMessage"] > * { position: relative; z-index: 1; }
+
+/* (If you prefer a crisp gradient top border instead of the wash, swap with:)
+[class*="StartOrResumeCourseCard"],
+[class*="WelcomeMessage"] {
+  background-image: linear-gradient(#fff, #fff), var(--g-primary);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  border: 1px solid transparent;
+  border-top-width: 4px;
+}
+*/
