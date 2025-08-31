@@ -26,10 +26,6 @@ import HiddenAfterDue from './hidden-after-due';
 import { UnitNavigation } from './sequence-navigation';
 import SequenceContent from './SequenceContent';
 
-/* NEW: use the existing generic next/prev buttons inside our sticky header */
-import PreviousButton from './sequence-navigation/generic/PreviousButton';
-import NextButton from './sequence-navigation/generic/NextButton';
-
 const Sequence = ({
   unitId,
   sequenceId,
@@ -103,8 +99,7 @@ const Sequence = ({
     function receiveMessage(event) {
       const { type } = event.data;
       if (type === 'entranceExam.passed') {
-        // I know this seems (is) intense. It is implemented this way since we need to refetch the underlying
-        // course blocks that were originally hidden because the Entrance Exam was not passed.
+        // Reload to pick up blocks that were hidden before the exam was passed.
         global.location.reload();
       }
     }
@@ -116,18 +111,12 @@ const Sequence = ({
     setUnitHasLoaded(true);
   };
 
-  // We want hide the unit navigation if we're in the middle of navigating to another unit
-  // but not if other things about the unit change, like the bookmark status.
-  // The array property of this useEffect ensures that we only hide the unit navigation
-  // while navigating to another unit.
   useEffect(() => {
     if (unit) {
       setUnitHasLoaded(false);
     }
   }, [(unit || {}).id]);
 
-  // If sequence might be a unit, we want to keep showing a spinner - the courseware container will redirect us when
-  // it knows which sequence to actually go to.
   const loading = sequenceStatus === 'loading' || (sequenceStatus === 'failed' && sequenceMightBeUnit);
   if (loading) {
     if (!sequenceId) {
@@ -141,14 +130,12 @@ const Sequence = ({
   }
 
   if (sequenceStatus === 'loaded' && sequence.isHiddenAfterDue) {
-    // Shouldn't even be here - these sequences are normally stripped out of the navigation.
-    // But we are here, so render a notice instead of the normal content.
     return <HiddenAfterDue courseId={courseId} />;
   }
 
   const gated = sequence && sequence.gatedContent !== undefined && sequence.gatedContent.gated;
 
-  /* NEW: derive a header title + progress from available data */
+  // Header title + progress (safe fallbacks for different backends)
   const headerTitle = (unit && (unit.displayName || unit.title || unit.name))
     || (sequence && (sequence.displayName || sequence.title || sequence.name))
     || (section && (section.displayName || section.title || section.name))
@@ -157,6 +144,22 @@ const Sequence = ({
   const activeIndex = unitIndex >= 0 ? unitIndex : 0;
   const totalUnits = (sequence && sequence.unitIds) ? sequence.unitIds.length : 0;
   const progressPct = totalUnits ? Math.min(100, Math.max(0, Math.round(((activeIndex + 1) / totalUnits) * 100))) : 0;
+
+  // Minimal, reliable header buttons that always call your handlers
+  const HeaderNavButton = ({ dir, onClick }) => (
+    <button
+      type="button"
+      className={`cw-nav-btn ${dir === 'prev' ? 'prev' : 'next'}`}
+      aria-label={dir === 'prev' ? 'Previous unit' : 'Next unit'}
+      onClick={onClick}
+    >
+      {dir === 'prev' ? '‹' : '›'}
+    </button>
+  );
+  HeaderNavButton.propTypes = {
+    dir: PropTypes.oneOf(['prev', 'next']).isRequired,
+    onClick: PropTypes.func.isRequired,
+  };
 
   const renderUnitNavigation = (isAtTop) => (
     <UnitNavigation
@@ -211,10 +214,7 @@ const Sequence = ({
             </div>
           )}
 
-          {/* === NEW: Sticky unit header (title + optional prev/next + slim progress) ===
-              We always show the title/progress. We only show our Prev/Next when the
-              built-in top SequenceNavigation is NOT present (i.e., when the outline
-              sidebar is enabled). This avoids duplicate controls. */}
+          {/* === Sticky unit header (title + prev/next + slim progress) === */}
           <div className="cw-unit-header" role="region" aria-label="Unit navigation">
             <div className="cw-unit-header__left">
               {headerTitle ? <h1 className="cw-unit-title">{headerTitle}</h1> : null}
@@ -222,17 +222,15 @@ const Sequence = ({
             <div className="cw-unit-header__right">
               {isEnabledOutlineSidebar && (
                 <>
-                  <PreviousButton
-                    className="cw-nav-btn prev"
-                    aria-label="Previous unit"
+                  <HeaderNavButton
+                    dir="prev"
                     onClick={() => {
                       logEvent('edx.ui.lms.sequence.previous_selected', 'top');
                       handlePrevious();
                     }}
                   />
-                  <NextButton
-                    className="cw-nav-btn next"
-                    aria-label="Next unit"
+                  <HeaderNavButton
+                    dir="next"
                     onClick={() => {
                       logEvent('edx.ui.lms.sequence.next_selected', 'top');
                       handleNext();

@@ -24,7 +24,7 @@
   --shadow-md: 0 12px 24px rgba(16,24,40,.08);
 
   /* Grid */
-  --page-max: 1280px; /* unused when left-aligned full width is enabled */
+  --page-max: 1280px;
   --gutter:   24px;
   --rail-w:   320px;
 
@@ -117,7 +117,7 @@ body[class*="tab-page"] .learning-header a:hover { color: rgba(255,255,255,0.92)
   align-items: center;
   gap: 14px;
   white-space: nowrap;
-  overflow-x: auto; /* graceful on small screens */
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 /* Hide the overflow dropdown UI (keep fixed tabs) */
@@ -285,7 +285,6 @@ body[class*="tab-page"] .learning-header a:hover { color: rgba(255,255,255,0.92)
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 14px;
   }
-  /* brand icons/links */
   [class*="CourseTools"] a, [class*="CourseHandouts"] a { color: var(--brand-600); }
   [class*="CourseTools"] a:hover, [class*="CourseHandouts"] a:hover { color: var(--brand-500); }
 }
@@ -302,13 +301,9 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
 }
 .btn-primary:hover { background: var(--brand-500); border-color: var(--brand-500); }
 
-/* Info pills calmer */
-a, button {
-  &.btn-outline-info, &.btn-info { filter: saturate(.9) opacity(.92); }
-}
+a, button { &.btn-outline-info, &.btn-info { filter: saturate(.9) opacity(.92); } }
 
 /* ===================== Courseware layout polish ===================== */
-/* Sticky header bar inside the learning view */
 .cw-unit-header {
   position: sticky;
   top: 72px; /* adjust if your global header differs */
@@ -325,8 +320,6 @@ a, button {
   gap: 12px;
   box-shadow: 0 4px 16px rgba(16,24,40,.06);
 }
-
-/* Title in header */
 .cw-unit-title {
   margin: 0;
   font-weight: 800;
@@ -334,13 +327,7 @@ a, button {
   letter-spacing: -0.01em;
   color: var(--text-strong);
 }
-
-/* Prev/Next buttons in header */
-.cw-unit-header__right {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
+.cw-unit-header__right { display: inline-flex; align-items: center; gap: 8px; }
 .cw-nav-btn {
   --btn-h: 36px;
   min-height: var(--btn-h);
@@ -356,14 +343,10 @@ a, button {
   background-image: var(--g-primary);
   box-shadow: 0 6px 16px rgba(14,71,241,0.22);
 }
-.cw-nav-btn:hover {
-  background-image: var(--g-primary-rev);
-  box-shadow: 0 8px 20px rgba(14,71,241,0.28);
-}
+.cw-nav-btn:hover { background-image: var(--g-primary-rev); box-shadow: 0 8px 20px rgba(14,71,241,0.28); }
 .cw-nav-btn.prev { opacity: .92; }
 .cw-nav-btn:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
 
-/* Slim progress bar under the header */
 .cw-progress {
   grid-column: 1 / -1;
   height: 2px;
@@ -386,15 +369,13 @@ a, button {
   box-shadow: var(--shadow-md);
   padding: clamp(18px, 2vw, 28px);
   max-width: 1024px;
-  margin: 0 auto; /* center within content column */
+  margin: 0 auto;
 }
 .sequence-container h1, .sequence-container h2,
 [class*="SequenceContent"] h1, [class*="SequenceContent"] h2 {
   color: var(--text-strong);
   letter-spacing: -0.01em;
 }
-
-/* Responsive media inside units */
 .sequence-container img,
 .sequence-container video,
 .sequence-container iframe,
@@ -437,4 +418,47 @@ a, button {
 [class*="UnitNavigation"] [class*="PreviousButton"],
 [class*="UnitNavigation"] [class*="NextButton"] {
   border-radius: 999px !important;
+}
+
+/* ===== Fix duplicates + sizing + scroll for in-course layout ===== */
+
+/* Hide the default tiny inline top arrows near the unit title */
+[class*="SequenceContent"] [data-plugin-slot*="NextUnitTopNavTriggerSlot"],
+[class*="SequenceContent"] [class*="NextUnitTopNavTrigger"],
+[class*="SequenceContent"] [class*="sequence"] [class*="nav"][class*="top"],
+[class*="SequenceContent"] [aria-label="Next"],
+[class*="SequenceContent"] [aria-label="Previous"] {
+  display: none !important;
+}
+
+/* Make content area bigger and modules pane smaller on desktop */
+@media (min-width: 1200px) {
+  .courseware [class*="SidebarBase"],
+  .courseware [class*="CourseOutlineTray"] {
+    width: 260px !important;
+    min-width: 260px !important;
+  }
+  .sequence.w-100 { min-width: 0; }
+}
+
+/* Remove unintended width cap from outer wrapper row */
+.sequence-container {
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* Widen the content card and ensure it's scroll-friendly */
+[class*="SequenceContent"] {
+  max-width: 1160px;
+  margin-left: 0;
+  margin-right: auto;
+  overflow: visible;
+}
+
+/* Keep the bottom Previous/Next compact */
+[class*="UnitNavigation"] .btn,
+[class*="UnitNavigation"] button {
+  min-height: 36px;
+  border-radius: 999px !important;
+  padding: 6px 12px;
 }
