@@ -135,7 +135,7 @@ const Sequence = ({
 
   const gated = sequence && sequence.gatedContent !== undefined && sequence.gatedContent.gated;
 
-  // Header title + progress (safe fallbacks for different backends)
+  // Header title + progress (safe fallbacks)
   const headerTitle = (unit && (unit.displayName || unit.title || unit.name))
     || (sequence && (sequence.displayName || sequence.title || sequence.name))
     || (section && (section.displayName || section.title || section.name))
@@ -144,22 +144,6 @@ const Sequence = ({
   const activeIndex = unitIndex >= 0 ? unitIndex : 0;
   const totalUnits = (sequence && sequence.unitIds) ? sequence.unitIds.length : 0;
   const progressPct = totalUnits ? Math.min(100, Math.max(0, Math.round(((activeIndex + 1) / totalUnits) * 100))) : 0;
-
-  // Minimal, reliable header buttons that always call your handlers
-  const HeaderNavButton = ({ dir, onClick }) => (
-    <button
-      type="button"
-      className={`cw-nav-btn ${dir === 'prev' ? 'prev' : 'next'}`}
-      aria-label={dir === 'prev' ? 'Previous unit' : 'Next unit'}
-      onClick={onClick}
-    >
-      {dir === 'prev' ? '‹' : '›'}
-    </button>
-  );
-  HeaderNavButton.propTypes = {
-    dir: PropTypes.oneOf(['prev', 'next']).isRequired,
-    onClick: PropTypes.func.isRequired,
-  };
 
   const renderUnitNavigation = (isAtTop) => (
     <UnitNavigation
@@ -214,31 +198,12 @@ const Sequence = ({
             </div>
           )}
 
-          {/* === Sticky unit header (title + prev/next + slim progress) === */}
-          <div className="cw-unit-header" role="region" aria-label="Unit navigation">
+          {/* === Sticky unit header (Title + slim progress) — no extra arrows here === */}
+          <div className="cw-unit-header" role="region" aria-label="Unit header">
             <div className="cw-unit-header__left">
               {headerTitle ? <h1 className="cw-unit-title">{headerTitle}</h1> : null}
             </div>
-            <div className="cw-unit-header__right">
-              {isEnabledOutlineSidebar && (
-                <>
-                  <HeaderNavButton
-                    dir="prev"
-                    onClick={() => {
-                      logEvent('edx.ui.lms.sequence.previous_selected', 'top');
-                      handlePrevious();
-                    }}
-                  />
-                  <HeaderNavButton
-                    dir="next"
-                    onClick={() => {
-                      logEvent('edx.ui.lms.sequence.next_selected', 'top');
-                      handleNext();
-                    }}
-                  />
-                </>
-              )}
-            </div>
+            <div className="cw-unit-header__right" />
             <div className="cw-progress" aria-hidden="true">
               <div className="cw-progress__bar" style={{ width: `${progressPct}%` }} />
             </div>
