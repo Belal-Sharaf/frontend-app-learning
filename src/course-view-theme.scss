@@ -274,3 +274,74 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
 
 /* Info pills calmer */
 a, button { &.btn-outline-info, &.btn-info { filter: saturate(.9) opacity(.92); } }
+
+
+/* === Fix pack: gradient CTA + gradient header + stronger page bg === */
+
+/* 0) Stronger page background gradient (still soft) */
+body.course,
+body.courseware,
+body[class*="tab-page"] {
+  /* keep your existing background, but add a slightly stronger wash */
+  background-color: #F7F9FE;
+  background-image:
+    radial-gradient(1100px 520px at 4% -10%, rgba(14,71,241,0.10) 0%, rgba(14,71,241,0) 62%),
+    linear-gradient(180deg, #FAFCFF 0%, #F4F7FF 100%);
+}
+
+/* 1) Header (tabs) gradient band */
+#courseTabsNavigation.course-tabs-navigation {
+  /* apply a gentle brand wash behind the tab row */
+  background-image: linear-gradient(180deg, rgba(14,71,241,0.10) 0%, rgba(14,71,241,0) 100%);
+  position: relative;
+  z-index: 0;
+}
+#courseTabsNavigation.course-tabs-navigation .container-xl,
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs {
+  position: relative; z-index: 1; /* keep content above the wash */
+}
+
+/* Also ensure the active/hover underline is a gradient */
+:root {
+  --g-primary: linear-gradient(90deg, var(--brand-600) 0%, var(--brand-500) 100%);
+  --g-primary-rev: linear-gradient(90deg, var(--brand-500) 0%, var(--brand-600) 100%);
+}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a{ position:relative; }
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a::after{
+  content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px; border-radius:2px;
+  background-image: var(--g-primary) !important;
+  transform: scaleX(0); transform-origin:left; opacity:0;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:hover::after,
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus::after { transform:scaleX(1); opacity:1; }
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active::after,
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"]::after { transform:scaleX(1) !important; opacity:1 !important; }
+
+/* 2) Make Start/Resume CTA a BLUE GRADIENT (works for both states) */
+/* Scope to the course page so we don't affect other MFEs */
+.tab-page .btn-primary {
+  background-color: transparent !important;   /* kill magenta fill */
+  background-image: var(--g-primary) !important;
+  border: 0 !important;
+  color: #fff !important;
+  box-shadow: 0 6px 16px rgba(14,71,241,0.22);
+}
+.tab-page .btn-primary:hover,
+.tab-page .btn-primary:focus {
+  background-image: var(--g-primary-rev) !important;
+  box-shadow: 0 8px 20px rgba(14,71,241,0.28);
+}
+
+/* If your theme sets .btn-primary to magenta via higher specificity,
+   this caps it off with a higher-specificity rule in the start/resume card too. */
+[class*="StartOrResumeCourseCard"] .btn-primary,
+[class*="WelcomeMessage"] .btn-primary {
+  background-image: var(--g-primary) !important;
+  border: 0 !important;
+  color: #fff !important;
+}
+[class*="StartOrResumeCourseCard"] .btn-primary:hover,
+[class*="WelcomeMessage"] .btn-primary:hover {
+  background-image: var(--g-primary-rev) !important;
+}
