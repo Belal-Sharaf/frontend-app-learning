@@ -26,6 +26,10 @@ import HiddenAfterDue from './hidden-after-due';
 import { UnitNavigation } from './sequence-navigation';
 import SequenceContent from './SequenceContent';
 
+/* NEW: use the existing generic next/prev buttons inside our sticky header */
+import PreviousButton from './sequence-navigation/generic/PreviousButton';
+import NextButton from './sequence-navigation/generic/NextButton';
+
 const Sequence = ({
   unitId,
   sequenceId,
@@ -49,6 +53,7 @@ const Sequence = ({
   const sequenceStatus = useSelector(state => state.courseware.sequenceStatus);
   const sequenceMightBeUnit = useSelector(state => state.courseware.sequenceMightBeUnit);
   const { enableNavigationSidebar: isEnabledOutlineSidebar } = useSelector(getCoursewareOutlineSidebarSettings);
+
   const handleNext = () => {
     const nextIndex = sequence.unitIds.indexOf(unitId) + 1;
     const newUnitId = sequence.unitIds[nextIndex];
@@ -143,6 +148,16 @@ const Sequence = ({
 
   const gated = sequence && sequence.gatedContent !== undefined && sequence.gatedContent.gated;
 
+  /* NEW: derive a header title + progress from available data */
+  const headerTitle = (unit && (unit.displayName || unit.title || unit.name))
+    || (sequence && (sequence.displayName || sequence.title || sequence.name))
+    || (section && (section.displayName || section.title || section.name))
+    || '';
+  const unitIndex = (sequence && sequence.unitIds) ? sequence.unitIds.indexOf(unitId) : -1;
+  const activeIndex = unitIndex >= 0 ? unitIndex : 0;
+  const totalUnits = (sequence && sequence.unitIds) ? sequence.unitIds.length : 0;
+  const progressPct = totalUnits ? Math.min(100, Math.max(0, Math.round(((activeIndex + 1) / totalUnits) * 100))) : 0;
+
   const renderUnitNavigation = (isAtTop) => (
     <UnitNavigation
       courseId={courseId}
@@ -150,11 +165,11 @@ const Sequence = ({
       unitId={unitId}
       isAtTop={isAtTop}
       onClickPrevious={() => {
-        logEvent('edx.ui.lms.sequence.previous_selected', 'bottom');
+        logEvent('edx.ui.lms.sequence.previous_selected', isAtTop ? 'top' : 'bottom');
         handlePrevious();
       }}
       onClickNext={() => {
-        logEvent('edx.ui.lms.sequence.next_selected', 'bottom');
+        logEvent('edx.ui.lms.sequence.next_selected', isAtTop ? 'top' : 'bottom');
         handleNext();
       }}
     />
@@ -195,6 +210,41 @@ const Sequence = ({
               />
             </div>
           )}
+
+          {/* === NEW: Sticky unit header (title + optional prev/next + slim progress) ===
+              We always show the title/progress. We only show our Prev/Next when the
+              built-in top SequenceNavigation is NOT present (i.e., when the outline
+              sidebar is enabled). This avoids duplicate controls. */}
+          <div className="cw-unit-header" role="region" aria-label="Unit navigation">
+            <div className="cw-unit-header__left">
+              {headerTitle ? <h1 className="cw-unit-title">{headerTitle}</h1> : null}
+            </div>
+            <div className="cw-unit-header__right">
+              {isEnabledOutlineSidebar && (
+                <>
+                  <PreviousButton
+                    className="cw-nav-btn prev"
+                    aria-label="Previous unit"
+                    onClick={() => {
+                      logEvent('edx.ui.lms.sequence.previous_selected', 'top');
+                      handlePrevious();
+                    }}
+                  />
+                  <NextButton
+                    className="cw-nav-btn next"
+                    aria-label="Next unit"
+                    onClick={() => {
+                      logEvent('edx.ui.lms.sequence.next_selected', 'top');
+                      handleNext();
+                    }}
+                  />
+                </>
+              )}
+            </div>
+            <div className="cw-progress" aria-hidden="true">
+              <div className="cw-progress__bar" style={{ width: `${progressPct}%` }} />
+            </div>
+          </div>
 
           <div className="unit-container flex-grow-1 pt-4">
             <SequenceContent
