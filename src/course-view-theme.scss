@@ -1,6 +1,4 @@
-/* ========== Course View Theme (alignment + Cogens brand + gradients) ==========
-   Style-only. Targets Course Home + Courseware views.
-   --------------------------------------------------------------------------- */
+
 
 :root {
   /* Brand */
@@ -16,14 +14,14 @@
   --border:      rgba(16, 24, 40, 0.12);
   --ring:        rgba(14, 71, 241, 0.18);
 
-  /* Rhythm */
+
   --radius-lg: 14px;
   --radius-md: 10px;
   --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
   --shadow-md: 0 12px 24px rgba(16,24,40,.08);
 
   /* Grid */
-  --page-max: 1280px;   /* not used when left-aligned full width is enabled */
+  --page-max: 1280px;   
   --gutter:   24px;
   --rail-w:   320px;
 
@@ -36,7 +34,7 @@
     linear-gradient(180deg, #F9FBFF 0%, #F5F8FF 100%);
 }
 
-/* ---------- Page background & container (LEFT-ALIGNED) ---------- */
+
 body.course,
 body.courseware,
 body[class*="tab-page"] {
@@ -68,9 +66,7 @@ body[class*="tab-page"] {
   }
 }
 
-/* =========================================================
-   TABS / TITLE — aligned, on-brand, gradient underline
-   ========================================================= */
+
 #courseTabsNavigation.course-tabs-navigation .nav-bar {
   border-bottom: 1px solid rgba(16,24,40,.10);
   background-image: var(--g-header-wash);
@@ -84,7 +80,7 @@ body[class*="tab-page"] {
   align-items: center;
   gap: 14px;
   white-space: nowrap;
-  overflow-x: auto; /* graceful on small screens */
+  overflow-x: auto; 
   -webkit-overflow-scrolling: touch;
 }
 
@@ -146,9 +142,7 @@ body[class*="tab-page"] {
   border-bottom-color: rgba(16, 24, 40, 0.08);
 }
 
-/* =========================================================
-   “Pick up / Resume” banner — grid + gradient CTA
-   ========================================================= */
+
 [class*="StartOrResumeCourseCard"],
 [class*="WelcomeMessage"] {
   background: var(--surface);
@@ -157,7 +151,7 @@ body[class*="tab-page"] {
   box-shadow: var(--shadow-sm);
   padding: 16px;
   position: relative;
-  overflow: hidden; /* for optional washes */
+  overflow: hidden; 
 }
 
 /* inner grid for alignment */
@@ -193,9 +187,7 @@ body[class*="tab-page"] {
   color: var(--text-muted); text-decoration: underline;
 }
 
-/* =========================================================
-   OUTLINE — module cards & tidy sequence rows (with subtle accent)
-   ========================================================= */
+
 .section-outline, [class*="section-outline"] { display: grid; gap: 12px; }
 
 /* Module card with faint gradient border accent */
@@ -218,7 +210,7 @@ body[class*="tab-page"] {
   gap: 12px; padding: 14px 16px; font-weight: 700; color: var(--text-strong);
 }
 
-/* Expand/Collapse all button */
+
 .tab-page .btn-outline-primary {
   border-color: var(--brand-600); color: var(--brand-600);
   border-radius: 999px; padding: 6px 12px; line-height: 1;
@@ -241,9 +233,8 @@ body[class*="tab-page"] {
 .section-outline .section:hover,
 [class*="section-outline"] .section:hover { border-color: var(--brand-500); box-shadow: 0 0 0 3px var(--ring); }
 
-/* =========================================================
-   RIGHT RAIL — consistent width & sticky on desktop
-   ========================================================= */
+
+
 @media (min-width: 1200px) {
   [class*="CourseTools"],
   [class*="CourseHandouts"] { position: sticky; top: 96px; }
@@ -260,9 +251,7 @@ body[class*="tab-page"] {
   [class*="CourseTools"] a:hover, [class*="CourseHandouts"] a:hover { color: var(--brand-500); }
 }
 
-/* =========================================================
-   GLOBAL buttons/links/focus — brand
-   ========================================================= */
+
 a, .link-primary { color: var(--brand-600); }
 a:hover, .link-primary:hover { color: var(--brand-500); }
 :focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
@@ -276,20 +265,34 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
 a, button { &.btn-outline-info, &.btn-info { filter: saturate(.9) opacity(.92); } }
 
 
-/* === Fix pack: gradient CTA + gradient header + stronger page bg === */
 
-/* 0) Stronger page background gradient (still soft) */
+
+/* Sharper BLUE canvas (no white) */
 body.course,
 body.courseware,
 body[class*="tab-page"] {
-  /* keep your existing background, but add a slightly stronger wash */
-  background-color: #F7F9FE;
+  background-color: var(--bg-soft); /* #F7F9FE by default */
   background-image:
-    radial-gradient(1100px 520px at 4% -10%, rgba(14,71,241,0.10) 0%, rgba(14,71,241,0) 62%),
-    linear-gradient(180deg, #FAFCFF 0%, #F4F7FF 100%);
+    /* left hotspot (small & strong, fades fast) */
+    radial-gradient(780px 420px at 6% -14%,
+      rgba(14, 71, 241, 0.18) 0%,
+      rgba(14, 71, 241, 0.08) 32%,
+      rgba(14, 71, 241, 0.00) 54%),
+    /* right counter hotspot (subtle) */
+    radial-gradient(900px 360px at 96% -18%,
+      rgba(14, 71, 241, 0.12) 0%,
+      rgba(14, 71, 241, 0.00) 50%),
+    /* crisp top band that settles into var(--bg-soft), not white */
+    linear-gradient(180deg,
+      #E7EEFF 0px,
+      #F1F6FF 160px,
+      var(--bg-soft) 220px,
+      var(--bg-soft) 100%);
 }
 
-/* 1) Header (tabs) gradient band */
+
+
+
 #courseTabsNavigation.course-tabs-navigation {
   /* apply a gentle brand wash behind the tab row */
   background-image: linear-gradient(180deg, rgba(14,71,241,0.10) 0%, rgba(14,71,241,0) 100%);
@@ -301,7 +304,7 @@ body[class*="tab-page"] {
   position: relative; z-index: 1; /* keep content above the wash */
 }
 
-/* Also ensure the active/hover underline is a gradient */
+/*  ensure the active/hover underline is a gradient */
 :root {
   --g-primary: linear-gradient(90deg, var(--brand-600) 0%, var(--brand-500) 100%);
   --g-primary-rev: linear-gradient(90deg, var(--brand-500) 0%, var(--brand-600) 100%);
@@ -318,10 +321,10 @@ body[class*="tab-page"] {
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active::after,
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"]::after { transform:scaleX(1) !important; opacity:1 !important; }
 
-/* 2) Make Start/Resume CTA a BLUE GRADIENT (works for both states) */
-/* Scope to the course page so we don't affect other MFEs */
+/*  Make Start/Resume CTA a BLUE GRADIENT  */
+
 .tab-page .btn-primary {
-  background-color: transparent !important;   /* kill magenta fill */
+  background-color: transparent !important;  
   background-image: var(--g-primary) !important;
   border: 0 !important;
   color: #fff !important;
@@ -333,8 +336,7 @@ body[class*="tab-page"] {
   box-shadow: 0 8px 20px rgba(14,71,241,0.28);
 }
 
-/* If your theme sets .btn-primary to magenta via higher specificity,
-   this caps it off with a higher-specificity rule in the start/resume card too. */
+
 [class*="StartOrResumeCourseCard"] .btn-primary,
 [class*="WelcomeMessage"] .btn-primary {
   background-image: var(--g-primary) !important;
@@ -351,74 +353,3 @@ body[class*="tab-page"] {
 
 
 
-/* ===== Top header (learning-header) — Cogens gradient like dashboard ===== */
-:root {
-  --g-topbar: linear-gradient(90deg, var(--brand-700) 0%, var(--brand-500) 100%);
-  --topbar-h: 64px; /* adjust if you want the bar taller/shorter */
-}
-
-body.course .learning-header,
-body.courseware .learning-header,
-body[class*="tab-page"] .learning-header {
-  position: relative;
-  z-index: 2;
-  background-image: var(--g-topbar) !important;
-  background-color: var(--brand-700) !important; /* fallback */
-  color: #fff;
-  min-height: var(--topbar-h);
-  box-shadow: 0 1px 0 rgba(17, 24, 39, 0.06), 0 8px 24px rgba(17, 24, 39, 0.06);
-}
-
-/* keep content above the gradient and align padding with page rhythm */
-body.course .learning-header .container-xl,
-body.courseware .learning-header .container-xl,
-body[class*="tab-page"] .learning-header .container-xl {
-  position: relative;
-  z-index: 1;
-  padding-left: clamp(12px, 2vw, var(--gutter));
-  padding-right: clamp(12px, 2vw, var(--gutter));
-}
-
-/* Ensure links/labels are readable over the gradient */
-body.course .learning-header a,
-body.courseware .learning-header a,
-body[class*="tab-page"] .learning-header a,
-body.course .learning-header .nav-link,
-body.courseware .learning-header .nav-link,
-body[class*="tab-page"] .learning-header .nav-link,
-body.course .learning-header .dropdown-toggle,
-body.courseware .learning-header .dropdown-toggle,
-body[class*="tab-page"] .learning-header .dropdown-toggle {
-  color: #fff !important;
-}
-
-/* Softer hover for header links */
-body.course .learning-header a:hover,
-body.courseware .learning-header a:hover,
-body[class*="tab-page"] .learning-header a:hover,
-body.course .learning-header .nav-link:hover,
-body.courseware .learning-header .nav-link:hover,
-body[class*="tab-page"] .learning-header .nav-link:hover {
-  color: rgba(255,255,255,0.92) !important;
-  text-decoration: none;
-}
-
-/* Invert outline buttons inside the header (e.g., Help, user menu) */
-body.course .learning-header .btn-outline-primary,
-body.courseware .learning-header .btn-outline-primary,
-body[class*="tab-page"] .learning-header .btn-outline-primary {
-  border-color: rgba(255,255,255,0.9) !important;
-  color: #fff !important;
-  background: transparent !important;
-}
-body.course .learning-header .btn-outline-primary:hover,
-body.courseware .learning-header .btn-outline-primary:hover,
-body[class*="tab-page"] .learning-header .btn-outline-primary:hover {
-  background: rgba(255,255,255,0.12) !important;
-}
-
-/* Optional: tighten header height on small screens
-@media (max-width: 768px) {
-  :root { --topbar-h: 56px; }
-}
-*/
