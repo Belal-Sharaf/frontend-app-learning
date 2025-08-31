@@ -345,3 +345,80 @@ body[class*="tab-page"] {
 [class*="WelcomeMessage"] .btn-primary:hover {
   background-image: var(--g-primary-rev) !important;
 }
+
+
+
+
+
+
+/* ===== Top header (learning-header) — Cogens gradient like dashboard ===== */
+:root {
+  --g-topbar: linear-gradient(90deg, var(--brand-700) 0%, var(--brand-500) 100%);
+  --topbar-h: 64px; /* adjust if you want the bar taller/shorter */
+}
+
+body.course .learning-header,
+body.courseware .learning-header,
+body[class*="tab-page"] .learning-header {
+  position: relative;
+  z-index: 2;
+  background-image: var(--g-topbar) !important;
+  background-color: var(--brand-700) !important; /* fallback */
+  color: #fff;
+  min-height: var(--topbar-h);
+  box-shadow: 0 1px 0 rgba(17, 24, 39, 0.06), 0 8px 24px rgba(17, 24, 39, 0.06);
+}
+
+/* keep content above the gradient and align padding with page rhythm */
+body.course .learning-header .container-xl,
+body.courseware .learning-header .container-xl,
+body[class*="tab-page"] .learning-header .container-xl {
+  position: relative;
+  z-index: 1;
+  padding-left: clamp(12px, 2vw, var(--gutter));
+  padding-right: clamp(12px, 2vw, var(--gutter));
+}
+
+/* Ensure links/labels are readable over the gradient */
+body.course .learning-header a,
+body.courseware .learning-header a,
+body[class*="tab-page"] .learning-header a,
+body.course .learning-header .nav-link,
+body.courseware .learning-header .nav-link,
+body[class*="tab-page"] .learning-header .nav-link,
+body.course .learning-header .dropdown-toggle,
+body.courseware .learning-header .dropdown-toggle,
+body[class*="tab-page"] .learning-header .dropdown-toggle {
+  color: #fff !important;
+}
+
+/* Softer hover for header links */
+body.course .learning-header a:hover,
+body.courseware .learning-header a:hover,
+body[class*="tab-page"] .learning-header a:hover,
+body.course .learning-header .nav-link:hover,
+body.courseware .learning-header .nav-link:hover,
+body[class*="tab-page"] .learning-header .nav-link:hover {
+  color: rgba(255,255,255,0.92) !important;
+  text-decoration: none;
+}
+
+/* Invert outline buttons inside the header (e.g., Help, user menu) */
+body.course .learning-header .btn-outline-primary,
+body.courseware .learning-header .btn-outline-primary,
+body[class*="tab-page"] .learning-header .btn-outline-primary {
+  border-color: rgba(255,255,255,0.9) !important;
+  color: #fff !important;
+  background: transparent !important;
+}
+body.course .learning-header .btn-outline-primary:hover,
+body.courseware .learning-header .btn-outline-primary:hover,
+body[class*="tab-page"] .learning-header .btn-outline-primary:hover {
+  background: rgba(255,255,255,0.12) !important;
+}
+
+/* Optional: tighten header height on small screens
+@media (max-width: 768px) {
+  :root { --topbar-h: 56px; }
+}
+*/
