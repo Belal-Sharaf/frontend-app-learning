@@ -1,17 +1,21 @@
-/* ========== Course View Theme (alignment + Cogens brand + gradients) ========== */
+/* ========== Course View Theme (Cogens) — FINAL SCROLL FIX ========== */
 
 :root{
+  /* Brand */
   --brand-700:#0E47F1; --brand-600:#0E47F1; --brand-500:#177DFF; --accent-400:#6BCEFF;
+  /* Neutrals */
   --text-strong:#0B1220; --text-muted:#5B6670; --surface:#FFF; --bg-soft:#F7F9FE;
   --border:rgba(16,24,40,.12); --ring:rgba(14,71,241,.18);
-  --radius-lg:14px; --radius-md:10px; --shadow-sm:0 1px 2px rgba(16,24,40,.06);
-  --shadow-md:0 12px 24px rgba(16,24,40,.08);
+  /* Elevation */
+  --radius-lg:14px; --radius-md:10px; --shadow-sm:0 1px 2px rgba(16,24,40,.06); --shadow-md:0 12px 24px rgba(16,24,40,.08);
+  /* Layout */
   --page-max:1280px; --gutter:24px; --rail-w:320px;
 
-  /* Height of global header + tabs + breathing room.
-     Adjust 104–148px if your header/tabs heights differ. */
-  --sticky-top:120px;
+  /* Height of global header + tab bar ABOVE the courseware pane.
+     If your theme’s header is taller/shorter, nudge this by ~8–12px. */
+  --cw-top-ui: 128px;
 
+  /* Gradients */
   --g-primary:linear-gradient(90deg,var(--brand-600),var(--brand-500));
   --g-primary-rev:linear-gradient(90deg,var(--brand-500),var(--brand-600));
   --g-header-wash:linear-gradient(180deg,rgba(14,71,241,.10),rgba(14,71,241,0));
@@ -22,12 +26,12 @@
 body.course, body.courseware, body[class*="tab-page"]{
   background-color:var(--bg-soft);
   background-image:
-    radial-gradient(780px 420px at 6% -14%, rgba(14,71,241,.18) 0%, rgba(14,71,241,.00) 54%),
+    radial-gradient(780px 420px at 6% -14%, rgba(14,71,241,.18) 0%, rgba(14,71,241,0) 54%),
     radial-gradient(900px 360px at 96% -18%, rgba(14,71,241,.12) 0%, rgba(14,71,241,0) 50%),
     linear-gradient(180deg,#E7EEFF 0,#F1F6FF 160px,var(--bg-soft) 220px,var(--bg-soft) 100%);
 }
 
-/* Top header */
+/* Site header (brand bar) */
 body.course .learning-header,
 body.courseware .learning-header,
 body[class*="tab-page"] .learning-header{
@@ -46,7 +50,7 @@ body.course .learning-header .dropdown-toggle,
 body.courseware .learning-header .dropdown-toggle,
 body[class*="tab-page"] .learning-header .dropdown-toggle{ color:#fff!important; }
 
-/* ---------- Tabs ---------- */
+/* Tabs */
 #courseTabsNavigation.course-tabs-navigation .nav-bar{
   border-bottom:1px solid rgba(16,24,40,.10);
   background-image:var(--g-header-wash);
@@ -81,7 +85,7 @@ body[class*="tab-page"] .learning-header .dropdown-toggle{ color:#fff!important;
   transform:scaleX(1)!important; opacity:1!important;
 }
 
-/* ---------- Course outline + right rail polish (unchanged) ---------- */
+/* Outline list polish (left column) */
 .section-outline,[class*="section-outline"]{ display:grid; gap:12px; }
 .section-outline .section,[class*="section-outline"] .section{
   background:var(--surface);
@@ -109,68 +113,83 @@ body[class*="tab-page"] .learning-header .dropdown-toggle{ color:#fff!important;
   }
 }
 
-/* ---------- Links / buttons ---------- */
+/* Links / buttons */
 a,.link-primary{ color:var(--brand-600); } a:hover,.link-primary:hover{ color:var(--brand-500); }
 :focus-visible{ outline:2px solid var(--brand-500); outline-offset:2px; }
 .btn-primary,button.btn-primary,a.btn.btn-primary{ background:var(--brand-600); border-color:var(--brand-600); }
 .btn-primary:hover{ background:var(--brand-500); border-color:var(--brand-500); }
 
-/* ===================== LAYOUT & SCROLL FIXES ===================== */
+/* ===================== COURSEWARE LAYOUT — THE FIX ===================== */
 
-/* 0) Ensure the page itself can scroll */
-html, body{ height:auto; overflow-y:auto!important; }
-.window-wrap, #content.content-wrapper{ overflow:visible!important; min-height:100vh; }
+/* Ensure page can scroll if content wants to */
+html, body{ overflow-y:auto!important; min-height:100%; }
 
-/* 1) Stop vertical centering; let content stack naturally */
+/* Kill any old centering that clamps height */
 .courseware .d-flex.flex-column.flex-grow-1.justify-content-center{ justify-content:flex-start!important; }
 
-/* 2) DO NOT force an inner scroller on the right pane */
+/* The row wrapper should not clip */
+.sequence-container{ overflow:visible!important; }
+
+/* Make the RIGHT PANE the scroll container */
 .courseware .sequence.w-100{
   display:flex; flex-direction:column; min-width:0;
-  height:auto;               /* allow page scroll */
-  overflow:visible!important;/* no clipping here */
+  height: calc(100dvh - var(--cw-top-ui));   /* gives the pane a REAL height */
+  overflow: hidden;                          /* the inner area will scroll */
 }
 
-/* 3) Sticky unit header: pin relative to the PAGE with a safe top offset */
+/* Sticky unit header INSIDE the right pane (progress bar intact) */
 .cw-unit-header{
-  position:sticky; top:var(--sticky-top); z-index:10;
-  background:linear-gradient(180deg,#F0F5FF 0%,rgba(240,245,255,.86) 100%);
-  border:1px solid rgba(16,24,40,.10); border-radius:12px;
-  padding:10px 14px; margin:8px 0 12px;
-  display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px;
-  box-shadow:0 4px 16px rgba(16,24,40,.06);
+  position: sticky; top: 0; z-index: 10;
+  background: linear-gradient(180deg,#F0F5FF 0%,rgba(240,245,255,.86) 100%);
+  border: 1px solid rgba(16,24,40,.10); border-radius: 12px;
+  padding: 10px 14px; margin: 8px 0 12px;
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px;
+  box-shadow: 0 4px 16px rgba(16,24,40,.06);
 }
 .cw-unit-title{ margin:0; font-weight:800; font-size:clamp(18px,2.2vw,22px); color:var(--text-strong); }
 
-/* 4) The outer row should never be a card */
-.sequence-container{
-  max-width:none!important; margin:0!important; padding:0!important;
-  background:transparent!important; border:0!important; box-shadow:none!important;
+/* Slim progress bar */
+.cw-progress{ grid-column:1 / -1; height:2px; background:rgba(14,71,241,.18); border-radius:2px; overflow:hidden; }
+.cw-progress__bar{ height:100%; background-image:var(--g-primary); transition:width .25s ease; }
+
+/* The SCROLLING content area */
+.courseware .sequence.w-100 .unit-container{
+  flex: 1 1 auto;
+  min-height: 0;             /* CRITICAL for flex children to be scrollable */
+  overflow: auto;            /* <-- actual scroll happens here */
+  -webkit-overflow-scrolling: touch;
+  padding-top: 4px;
 }
 
-/* 5) REMOVE the extra card we previously added to the inner wrapper */
+/* Remove the extra “outer card” — the real content already has one */
 .unit-container > div:first-child{
-  background:transparent!important; border:0!important; box-shadow:none!important; padding:0!important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  overflow: visible !important;
 }
 
-/* 6) Make sure NOTHING inside the unit clips its children or sets a fixed height */
+/* Defensive: none of the inner shells should force fixed heights or clip */
 .courseware .sequence .pgn__card,
 .courseware .sequence .card,
 .courseware .sequence .pgn__card-body,
 .courseware .sequence .card-body,
-.courseware .sequence .unit,
-.courseware .sequence [class*="xblock"]{
-  overflow:visible!important;
-  height:auto!important;
-  max-height:none!important;
+.courseware .sequence .course-wrapper,
+.courseware .sequence .course-content,
+.courseware .sequence .vert-mod,
+.courseware .sequence .xblock{
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
-/* 7) Media inside the unit should be responsive */
+/* Media inside units */
 .unit-container img, .unit-container video, .unit-container iframe{
   max-width:100%; height:auto; border-radius:10px; display:block;
 }
 
-/* 8) Prev/Next pills */
+/* Prev/Next pills */
 [class*="UnitNavigation"] .btn, [class*="UnitNavigation"] button{
   min-height:36px; border-radius:999px!important; padding:6px 12px;
 }
