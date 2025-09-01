@@ -305,3 +305,74 @@ body.courseware .sequence.w-100 {
 /* (Optional) If any wrapper vertically centers things, undo it inside the scroller */
 .cw-scroll .justify-content-center { justify-content: flex-start !important; }
 .cw-scroll .align-items-center { align-items: stretch !important; }
+
+
+
+
+
+
+
+/* =========================
+   FINAL xBLOCK UNCLIP + WIDTH ALIGN
+   ========================= */
+
+/* A) Make .cw-scroll the only scroller (you already have this, keep it) */
+.cw-scroll {
+  min-height: 0 !important;
+  height: calc(100svh - var(--cw-top-ui, 128px)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* B) KILL ALL HEIGHT/CLIP ON UNIT CONTENT WRAPPERS */
+#main .sequence .sequence-content,
+#main .sequence .xblock-student_view,
+#main .sequence .xblock,                    /* generic xblock wrapper */
+#main .sequence .vert,                      /* vertical container */
+#main .sequence .wrapper-compound,          /* compound wrapper */
+#main .sequence [class*="xmodule_"],        /* HtmlBlock/VideoBlock/etc. */
+#main .sequence [class*="xblock"],          /* any other xblock variants */
+#main .sequence .pgn__card,
+#main .sequence .pgn__card-body,
+#main .sequence .card,
+#main .sequence .card-body {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* If any element is still clipping text with ellipses */
+#main .sequence * {
+  text-overflow: clip !important;
+}
+
+/* C) HEADER + CARD SAME WIDTH (so it “fits the card”) */
+:root { --cw-content-max: 880px; } /* feel free to set 820/900 to taste */
+
+.cw-unit-header,
+#main .sequence .unit-container > div:first-child,           /* common root of SequenceContent */
+#main .sequence .sequence-content,
+#main .sequence .xblock-student_view > .xblock,              /* typical HtmlBlock root */
+#main .sequence .vert > .xblock {
+  max-width: var(--cw-content-max);
+  width: 100%;
+  margin-inline: auto;
+}
+
+/* D) DEFENSIVE: flex parents must allow a child to scroll */
+#main,
+#main #main-content,
+#main .sequence-container,
+#main .sequence.w-100,
+#main .sequence .unit-container {
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+/* E) EXTRA-STRONG width reset for any leaked “container” caps */
+body.courseware main#main .container-xl,
+body.courseware main#main [class*="container"] {
+  max-width: 100% !important;
+  width: 100% !important;
+}
