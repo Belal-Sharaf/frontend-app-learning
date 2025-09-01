@@ -1,74 +1,40 @@
-/* ========== Course View Theme (alignment + Cogens brand + gradients) ==========
-   Targets Course Home + Courseware views
-   --------------------------------------------------------------------------- */
+/* ========== Course View Theme (alignment + Cogens brand + gradients) ========== */
 
-:root {
-  /* Brand */
-  --brand-700: #0E47F1;
-  --brand-600: #0E47F1;
-  --brand-500: #177DFF;
-  --accent-400: #6BCEFF;
+:root{
+  --brand-700:#0E47F1; --brand-600:#0E47F1; --brand-500:#177DFF; --accent-400:#6BCEFF;
+  --text-strong:#0B1220; --text-muted:#5B6670; --surface:#FFF; --bg-soft:#F7F9FE;
+  --border:rgba(16,24,40,.12); --ring:rgba(14,71,241,.18);
+  --radius-lg:14px; --radius-md:10px; --shadow-sm:0 1px 2px rgba(16,24,40,.06);
+  --shadow-md:0 12px 24px rgba(16,24,40,.08);
+  --page-max:1280px; --gutter:24px; --rail-w:320px;
 
-  /* Neutrals & layout */
-  --text-strong: #0B1220;
-  --text-muted:  #5B6670;
-  --surface:     #FFFFFF;
-  --bg-soft:     #F7F9FE;
-  --border:      rgba(16, 24, 40, 0.12);
-  --ring:        rgba(14, 71, 241, 0.18);
+  /* Height of global header + tabs + breathing room.
+     Adjust 104–148px if your header/tabs heights differ. */
+  --sticky-top:120px;
 
-  /* Rhythm */
-  --radius-lg: 14px;
-  --radius-md: 10px;
-  --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
-  --shadow-md: 0 12px 24px rgba(16,24,40,.08);
-
-  /* Grid */
-  --page-max: 1280px;
-  --gutter:   24px;
-  --rail-w:   320px;
-
-  /* Courseware pane offset (header + tabs + top padding) */
-  --cw-top-ui: 128px; /* tweak 120–140px to fit your theme */
-
-  /* Gradients */
-  --g-primary:      linear-gradient(90deg, var(--brand-600) 0%, var(--brand-500) 100%);
-  --g-primary-rev:  linear-gradient(90deg, var(--brand-500) 0%, var(--brand-600) 100%);
-  --g-header-wash:  linear-gradient(180deg, rgba(14,71,241,0.10) 0%, rgba(14,71,241,0.00) 100%);
-  --g-topbar:       linear-gradient(90deg, var(--brand-700) 0%, var(--brand-500) 100%);
+  --g-primary:linear-gradient(90deg,var(--brand-600),var(--brand-500));
+  --g-primary-rev:linear-gradient(90deg,var(--brand-500),var(--brand-600));
+  --g-header-wash:linear-gradient(180deg,rgba(14,71,241,.10),rgba(14,71,241,0));
+  --g-topbar:linear-gradient(90deg,var(--brand-700),var(--brand-500));
 }
 
 /* ---------- Page background ---------- */
-body.course,
-body.courseware,
-body[class*="tab-page"] {
-  background-color: var(--bg-soft);
+body.course, body.courseware, body[class*="tab-page"]{
+  background-color:var(--bg-soft);
   background-image:
-    radial-gradient(780px 420px at 6% -14%,
-      rgba(14, 71, 241, 0.18) 0%,
-      rgba(14, 71, 241, 0.08) 32%,
-      rgba(14, 71, 241, 0.00) 54%),
-    radial-gradient(900px 360px at 96% -18%,
-      rgba(14, 71, 241, 0.12) 0%,
-      rgba(14, 71, 241, 0.00) 50%),
-    linear-gradient(180deg,
-      #E7EEFF 0px,
-      #F1F6FF 160px,
-      var(--bg-soft) 220px,
-      var(--bg-soft) 100%);
+    radial-gradient(780px 420px at 6% -14%, rgba(14,71,241,.18) 0%, rgba(14,71,241,.00) 54%),
+    radial-gradient(900px 360px at 96% -18%, rgba(14,71,241,.12) 0%, rgba(14,71,241,0) 50%),
+    linear-gradient(180deg,#E7EEFF 0,#F1F6FF 160px,var(--bg-soft) 220px,var(--bg-soft) 100%);
 }
 
-/* Top site header gradient (logo bar) */
+/* Top header */
 body.course .learning-header,
 body.courseware .learning-header,
-body[class*="tab-page"] .learning-header {
-  position: relative;
-  z-index: 2;
-  background-image: var(--g-topbar) !important;
-  background-color: var(--brand-700) !important;
-  color: #fff;
-  min-height: 64px;
-  box-shadow: 0 1px 0 rgba(17, 24, 39, 0.06), 0 8px 24px rgba(17, 24, 39, 0.06);
+body[class*="tab-page"] .learning-header{
+  position:relative; z-index:2;
+  background-image:var(--g-topbar)!important; background-color:var(--brand-700)!important;
+  color:#fff; min-height:64px;
+  box-shadow:0 1px 0 rgba(17,24,39,.06),0 8px 24px rgba(17,24,39,.06);
 }
 body.course .learning-header a,
 body.courseware .learning-header a,
@@ -78,278 +44,133 @@ body.courseware .learning-header .nav-link,
 body[class*="tab-page"] .learning-header .nav-link,
 body.course .learning-header .dropdown-toggle,
 body.courseware .learning-header .dropdown-toggle,
-body[class*="tab-page"] .learning-header .dropdown-toggle { color: #fff !important; }
-
-/* ---------- Tab page grid ---------- */
-.tab-page .container-xl {
-  max-width: none !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding-left: clamp(12px, 2vw, var(--gutter));
-  padding-right: clamp(12px, 2vw, var(--gutter));
-}
-@media (min-width: 1200px) {
-  .tab-page .container-xl > .row:first-child {
-    display: grid;
-    grid-template-columns: minmax(0,1fr) var(--rail-w);
-    column-gap: var(--gutter);
-  }
-  .tab-page .container-xl > .row:first-child > [class^="col"],
-  .tab-page .container-xl > .row:first-child > [class*=" col"] {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-}
+body[class*="tab-page"] .learning-header .dropdown-toggle{ color:#fff!important; }
 
 /* ---------- Tabs ---------- */
-#courseTabsNavigation.course-tabs-navigation .nav-bar {
-  border-bottom: 1px solid rgba(16,24,40,.10);
-  background-image: var(--g-header-wash);
-  backdrop-filter: saturate(1.02);
-  padding: 8px 0;
-  margin-bottom: 8px;
+#courseTabsNavigation.course-tabs-navigation .nav-bar{
+  border-bottom:1px solid rgba(16,24,40,.10);
+  background-image:var(--g-header-wash);
+  padding:8px 0; margin-bottom:8px;
 }
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  white-space: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs{
+  display:inline-flex; align-items:center; gap:14px; white-space:nowrap; overflow-x:auto;
 }
 #courseTabsNavigation .nav-underline-tabs .dropdown,
 #courseTabsNavigation .nav-underline-tabs .dropdown-toggle,
 #courseTabsNavigation .nav-underline-tabs [aria-haspopup="menu"],
 #courseTabsNavigation .nav-underline-tabs [data-testid*="overflow"],
-#courseTabsNavigation .nav-underline-tabs .dropdown-menu { display: none !important; }
-
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  height: 40px;
-  padding: 0 6px;
-  text-decoration: none;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--text-muted);
-  border-radius: 8px;
-  transition: color 120ms ease;
+#courseTabsNavigation .nav-underline-tabs .dropdown-menu{ display:none!important; }
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a{
+  position:relative; display:inline-flex; align-items:center; height:40px; padding:0 6px;
+  font-weight:600; line-height:1; text-decoration:none; color:var(--text-muted);
+  border-radius:8px; transition:color 120ms ease;
 }
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:hover,
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus { color: var(--brand-600); }
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus{ color:var(--brand-600); }
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active,
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"] { color: var(--brand-600); }
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -2px;
-  height: 2px; border-radius: 2px;
-  background-image: var(--g-primary) !important;
-  transform: scaleX(0);
-  transform-origin: left;
-  opacity: 0;
-  transition: transform 160ms ease, opacity 160ms ease;
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"]{ color:var(--brand-600); }
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a::after{
+  content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px; border-radius:2px;
+  background-image:var(--g-primary)!important; transform:scaleX(0); opacity:0;
+  transition:transform 160ms ease, opacity 160ms ease;
 }
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:hover::after,
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus::after {
-  transform: scaleX(1); opacity: 1;
-}
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a:focus::after{ transform:scaleX(1); opacity:1; }
 #courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a.active::after,
-#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"]::after {
-  transform: scaleX(1) !important; opacity: 1 !important;
+#courseTabsNavigation.course-tabs-navigation .nav-underline-tabs a[aria-current="page"]::after{
+  transform:scaleX(1)!important; opacity:1!important;
 }
 
-/* ---------- “Pick up / Resume” card ---------- */
-[class*="StartOrResumeCourseCard"],
-[class*="WelcomeMessage"] {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  padding: 16px;
-  position: relative;
-  overflow: hidden;
-}
-[class*="StartOrResumeCourseCard"] .card,
-[class*="WelcomeMessage"] .card,
-[class*="StartOrResumeCourseCard"] .container,
-[class*="WelcomeMessage"] .container {
-  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;
-}
-[class*="StartOrResumeCourseCard"] .btn-primary,
-[class*="WelcomeMessage"] .btn-primary {
-  min-height: 40px; padding: 0 16px; border-radius: 999px;
-  background-color: transparent !important;
-  background-image: var(--g-primary) !important;
-  border: 0 !important; color: #fff !important;
-  box-shadow: 0 6px 16px rgba(14,71,241,0.22);
-}
-[class*="StartOrResumeCourseCard"] .btn-primary:hover,
-[class*="WelcomeMessage"] .btn-primary:hover {
-  background-image: var(--g-primary-rev) !important;
-  box-shadow: 0 8px 20px rgba(14,71,241,0.28);
-}
-
-/* ---------- Outline list ---------- */
-.section-outline, [class*="section-outline"] { display: grid; gap: 12px; }
-.section-outline .section,
-[class*="section-outline"] .section {
-  background: var(--surface);
-  border: 1px solid transparent;
-  background:
-    linear-gradient(var(--surface), var(--surface)) padding-box,
-    linear-gradient(90deg, rgba(14,71,241,0.10), rgba(14,71,241,0)) border-box;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+/* ---------- Course outline + right rail polish (unchanged) ---------- */
+.section-outline,[class*="section-outline"]{ display:grid; gap:12px; }
+.section-outline .section,[class*="section-outline"] .section{
+  background:var(--surface);
+  border:1px solid transparent;
+  background:linear-gradient(var(--surface),var(--surface)) padding-box,
+             linear-gradient(90deg,rgba(14,71,241,.10),rgba(14,71,241,0)) border-box;
+  border-radius:var(--radius-md); box-shadow:var(--shadow-sm);
+  transition:border-color 120ms, box-shadow 120ms;
 }
 .section-outline .section .section-title,
-[class*="section-outline"] .section [class*="SectionTitle"] {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; padding: 14px 16px; font-weight: 700; color: var(--text-strong);
+[class*="section-outline"] .section [class*="SectionTitle"]{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:14px 16px; font-weight:700; color:var(--text-strong);
 }
-.tab-page .btn-outline-primary {
-  border-color: var(--brand-600); color: var(--brand-600);
-  border-radius: 999px; padding: 6px 12px; line-height: 1;
+.section-outline .sequence-link,[class*="section-outline"] [class*="SequenceLink"]{
+  display:grid; grid-template-columns:24px 1fr auto; align-items:center;
+  gap:10px; padding:12px 16px; border-top:1px dashed rgba(16,24,40,.12); min-height:44px;
 }
-.tab-page .btn-outline-primary:hover { background: var(--brand-600); color: #fff; }
-.section-outline .sequence-link,
-[class*="section-outline"] [class*="SequenceLink"] {
-  display: grid; grid-template-columns: 24px 1fr auto;
-  align-items: center; gap: 10px; padding: 12px 16px;
-  border-top: 1px dashed rgba(16,24,40,.12); min-height: 44px;
+.section-outline .sequence-link:hover,[class*="section-outline"] [class*="SequenceLink"]:hover{
+  background:rgba(14,71,241,.045);
 }
-.section-outline .sequence-link:hover,
-[class*="section-outline"] [class*="SequenceLink"]:hover { background: rgba(14, 71, 241, .045); }
-.section-outline .section:hover,
-[class*="section-outline"] .section:hover { border-color: var(--brand-500); box-shadow: 0 0 0 3px var(--ring); }
-
-/* ---------- Right rail ---------- */
-@media (min-width: 1200px) {
-  [class*="CourseTools"],
-  [class*="CourseHandouts"] { position: sticky; top: 96px; }
-
-  [class*="CourseTools"],
-  [class*="CourseHandouts"],
-  [class*="CourseTools"] .card,
-  [class*="CourseHandouts"] .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 14px;
+@media (min-width:1200px){
+  .courseware [class*="SidebarBase"], .courseware [class*="CourseOutlineTray"]{
+    width:260px!important; min-width:260px!important;
   }
-  [class*="CourseTools"] a, [class*="CourseHandouts"] a { color: var(--brand-600); }
-  [class*="CourseTools"] a:hover, [class*="CourseHandouts"] a:hover { color: var(--brand-500); }
 }
 
-/* ---------- Links / focus / primary ---------- */
-a, .link-primary { color: var(--brand-600); }
-a:hover, .link-primary:hover { color: var(--brand-500); }
-:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
-.btn-primary, button.btn-primary, a.btn.btn-primary { background: var(--brand-600); border-color: var(--brand-600); }
-.btn-primary:hover { background: var(--brand-500); border-color: var(--brand-500); }
+/* ---------- Links / buttons ---------- */
+a,.link-primary{ color:var(--brand-600); } a:hover,.link-primary:hover{ color:var(--brand-500); }
+:focus-visible{ outline:2px solid var(--brand-500); outline-offset:2px; }
+.btn-primary,button.btn-primary,a.btn.btn-primary{ background:var(--brand-600); border-color:var(--brand-600); }
+.btn-primary:hover{ background:var(--brand-500); border-color:var(--brand-500); }
 
-/* ===================== Courseware layout polish ===================== */
+/* ===================== LAYOUT & SCROLL FIXES ===================== */
 
-/* Undo vertical centering clamp if any theme does it */
-.courseware .d-flex.flex-column.flex-grow-1.justify-content-center {
-  justify-content: flex-start !important;
+/* 0) Ensure the page itself can scroll */
+html, body{ height:auto; overflow-y:auto!important; }
+.window-wrap, #content.content-wrapper{ overflow:visible!important; min-height:100vh; }
+
+/* 1) Stop vertical centering; let content stack naturally */
+.courseware .d-flex.flex-column.flex-grow-1.justify-content-center{ justify-content:flex-start!important; }
+
+/* 2) DO NOT force an inner scroller on the right pane */
+.courseware .sequence.w-100{
+  display:flex; flex-direction:column; min-width:0;
+  height:auto;               /* allow page scroll */
+  overflow:visible!important;/* no clipping here */
 }
 
-/* Make the right column a fixed-height flex column */
-.courseware .sequence.w-100 {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  height: calc(100dvh - var(--cw-top-ui)); /* <-- provides a height so overflow can work */
-  overflow: hidden; /* child (.unit-container) will scroll */
+/* 3) Sticky unit header: pin relative to the PAGE with a safe top offset */
+.cw-unit-header{
+  position:sticky; top:var(--sticky-top); z-index:10;
+  background:linear-gradient(180deg,#F0F5FF 0%,rgba(240,245,255,.86) 100%);
+  border:1px solid rgba(16,24,40,.10); border-radius:12px;
+  padding:10px 14px; margin:8px 0 12px;
+  display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px;
+  box-shadow:0 4px 16px rgba(16,24,40,.06);
+}
+.cw-unit-title{ margin:0; font-weight:800; font-size:clamp(18px,2.2vw,22px); color:var(--text-strong); }
+
+/* 4) The outer row should never be a card */
+.sequence-container{
+  max-width:none!important; margin:0!important; padding:0!important;
+  background:transparent!important; border:0!important; box-shadow:none!important;
 }
 
-/* Sticky unit header pinned to this pane */
-.cw-unit-header {
-  position: sticky;
-  top: 0;               /* stick to the top of .sequence, not the page */
-  z-index: 10;
-  background: linear-gradient(180deg, #F0F5FF 0%, rgba(240,245,255,0.86) 100%);
-  border: 1px solid rgba(16,24,40,.10);
-  border-radius: 12px;
-  padding: 10px 14px;
-  margin: 8px 0 12px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 4px 16px rgba(16,24,40,.06);
-}
-.cw-unit-title {
-  margin: 0;
-  font-weight: 800;
-  font-size: clamp(18px, 2.2vw, 22px);
-  letter-spacing: -0.01em;
-  color: var(--text-strong);
-}
-.cw-unit-header__right { display: inline-flex; align-items: center; gap: 8px; }
-
-/* Slim progress */
-.cw-progress { grid-column: 1 / -1; height: 2px; background: rgba(14,71,241,0.18); border-radius: 2px; overflow: hidden; }
-.cw-progress__bar { height: 100%; background-image: var(--g-primary); transition: width .25s ease; }
-
-/* Outer row should NOT be a card */
-.sequence-container {
-  max-width: none !important;
-  margin: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
+/* 5) REMOVE the extra card we previously added to the inner wrapper */
+.unit-container > div:first-child{
+  background:transparent!important; border:0!important; box-shadow:none!important; padding:0!important;
 }
 
-/* The scrolling content pane */
-.courseware .sequence.w-100 .unit-container {
-  flex: 1 1 auto;
-  min-height: 0;           /* CRITICAL: allows the child to actually scroll */
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-top: 8px;
+/* 6) Make sure NOTHING inside the unit clips its children or sets a fixed height */
+.courseware .sequence .pgn__card,
+.courseware .sequence .card,
+.courseware .sequence .pgn__card-body,
+.courseware .sequence .card-body,
+.courseware .sequence .unit,
+.courseware .sequence [class*="xblock"]{
+  overflow:visible!important;
+  height:auto!important;
+  max-height:none!important;
 }
 
-/* Remove the extra "card on the first child" that caused the double-white boxes */
-.unit-container > div:first-child {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
+/* 7) Media inside the unit should be responsive */
+.unit-container img, .unit-container video, .unit-container iframe{
+  max-width:100%; height:auto; border-radius:10px; display:block;
 }
 
-/* Media inside units */
-.unit-container img,
-.unit-container video,
-.unit-container iframe {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-/* Bottom prev/next pills */
-[class*="UnitNavigation"] .btn,
-[class*="UnitNavigation"] button {
-  min-height: 36px;
-  border-radius: 999px !important;
-  padding: 6px 12px;
-}
-
-/* ===================== Safety unclamps ===================== */
-.window-wrap,
-#content.content-wrapper,
-.courseware .sequence-container { overflow: visible !important; }
-
-.courseware .d-flex.flex-column.flex-grow-1 { min-height: 0 !important; }
-
-/* Keep left outline modest so content has space */
-@media (min-width: 1200px) {
-  .courseware [class*="SidebarBase"],
-  .courseware [class*="CourseOutlineTray"] {
-    width: 260px !important;
-    min-width: 260px !important;
-  }
-  .sequence.w-100 { min-width: 0; }
+/* 8) Prev/Next pills */
+[class*="UnitNavigation"] .btn, [class*="UnitNavigation"] button{
+  min-height:36px; border-radius:999px!important; padding:6px 12px;
 }
