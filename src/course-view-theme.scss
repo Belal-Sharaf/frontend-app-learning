@@ -233,3 +233,75 @@ body.courseware main#main *[class*='container'] {
   overflow: visible !important; /* scrolling is handled by .cw-scroll */
 }
 
+/* =========================
+   FINAL COURSEWARE UNCLAMP
+   (append at the very end)
+   ========================= */
+
+/* 0) Kill the hero overlay if it leaked into courseware */
+body.courseware .marketing-hero { display: none !important; }
+
+/* 1) Re-enable page scroll everywhere */
+html, body { height: auto !important; overflow-y: auto !important; }
+.window-wrap { overflow: visible !important; }
+
+/* 2) Defuse any <main> width cap that made the content narrow */
+body:not(.is-logistration):not(.is-landing) main#main {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* 3) Every flex ancestor must allow a child scroller (min-height:0) */
+body.courseware .window-wrap,
+body.courseware #root,
+body.courseware main#main,
+body.courseware #content.content-wrapper,
+body.courseware #main-content.container-xl,
+body.courseware .d-flex.flex-column,
+body.courseware .d-flex.flex-column.flex-grow-1,
+body.courseware .sequence-container,
+body.courseware .sequence.w-100 {
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* 4) Give scroll authority to the intended wrapper (matches your JSX) */
+.cw-scroll {
+  min-height: 0 !important;
+  height: calc(100svh - var(--cw-top-ui, 128px)) !important; /* svh for mobile UI chrome */
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* The inner content should NOT become a second scroller */
+.courseware .sequence.w-100 .unit-container {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  overflow: visible !important; /* scrolling happens on .cw-scroll */
+}
+
+/* 5) Make sticky header align with the card width so it looks attached */
+:root { --cw-content-max: 820px; } /* change to 760/900 if you prefer */
+.cw-unit-header { max-width: var(--cw-content-max); margin-inline: auto; }
+.unit-container > div:first-child { max-width: var(--cw-content-max); margin-inline: auto; }
+
+/* 6) Defensive: no fixed heights or clipping inside units */
+#main .sequence .pgn__card,
+#main .sequence .card,
+#main .sequence .pgn__card-body,
+#main .sequence .card-body,
+#main .sequence .wrapper-compound,
+#main .sequence .vert,
+#main .sequence .xblock,
+#main .sequence [class*="xblock"] {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* (Optional) If any wrapper vertically centers things, undo it inside the scroller */
+.cw-scroll .justify-content-center { justify-content: flex-start !important; }
+.cw-scroll .align-items-center { align-items: stretch !important; }
