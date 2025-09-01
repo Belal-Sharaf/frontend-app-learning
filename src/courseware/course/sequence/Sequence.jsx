@@ -26,6 +26,8 @@ import HiddenAfterDue from './hidden-after-due';
 import { UnitNavigation } from './sequence-navigation';
 import SequenceContent from './SequenceContent';
 
+const CW_TOP_UI_DEFAULT = '128px'; // header + tabs estimate; CSS var fallback below
+
 const Sequence = ({
   unitId,
   sequenceId,
@@ -75,8 +77,6 @@ const Sequence = ({
   };
 
   const logEvent = (eventName, widgetPlacement, targetUnitId) => {
-    // Note: tabs are tracked with a 1-indexed position
-    // as opposed to a 0-index used throughout this MFE
     const currentIndex = sequence.unitIds.length > 0 ? sequence.unitIds.indexOf(unitId) : 0;
     const payload = {
       current_tab: currentIndex + 1,
@@ -99,7 +99,6 @@ const Sequence = ({
     function receiveMessage(event) {
       const { type } = event.data;
       if (type === 'entranceExam.passed') {
-        // Reload to pick up blocks that were hidden before the exam was passed.
         global.location.reload();
       }
     }
@@ -162,6 +161,28 @@ const Sequence = ({
     />
   );
 
+  // ---- SCROLL CONTAINER + STICKY HEADER (inline styles win over conflicting CSS) ----
+  const scrollWrapperStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 0, // critical for flex children to be scrollable
+    height: `calc(100dvh - var(--cw-top-ui, ${CW_TOP_UI_DEFAULT}))`, // use CSS var or fallback
+    overflow: 'auto',
+    WebkitOverflowScrolling: 'touch',
+  };
+
+  const unitContainerStyle = {
+    flex: '1 1 auto',
+    minHeight: 0,         // allow inner content to scroll
+    overflow: 'visible',  // xblocks manage their own overflow
+  };
+
+  const stickyHeaderStyle = {
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
+  };
+
   const defaultContent = (
     <>
       <div className="sequence-container d-inline-flex flex-row w-100">
@@ -172,55 +193,59 @@ const Sequence = ({
           unitId={unitId}
         />
         <CourseOutlineSidebarSlot />
-        <div className="sequence w-100">
-          {!isEnabledOutlineSidebar && (
-            <div className="sequence-navigation-container">
-              <SequenceNavigationSlot
+        <div className="sequence w-100" style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          {/* Make the right column itself a scroll container */}
+          <div className="cw-scroll" style={scrollWrapperStyle}>
+            {!isEnabledOutlineSidebar && (
+              <div className="sequence-navigation-container">
+                <SequenceNavigationSlot
+                  sequenceId={sequenceId}
+                  unitId={unitId}
+                  nextHandler={() => {
+                    logEvent('edx.ui.lms.sequence.next_selected', 'top');
+                    handleNext();
+                  }}
+                  onNavigate={(destinationUnitId) => {
+                    logEvent('edx.ui.lms.sequence.tab_selected', 'top', destinationUnitId);
+                    handleNavigate(destinationUnitId);
+                  }}
+                  previousHandler={() => {
+                    logEvent('edx.ui.lms.sequence.previous_selected', 'top');
+                    handlePrevious();
+                  }}
+                  {...{
+                    nextSequenceHandler,
+                    handleNavigate,
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Sticky unit header (Title + slim progress) */}
+            <div className="cw-unit-header" role="region" aria-label="Unit header" style={stickyHeaderStyle}>
+              <div className="cw-unit-header__left">
+                {headerTitle ? <h1 className="cw-unit-title">{headerTitle}</h1> : null}
+              </div>
+              <div className="cw-unit-header__right" />
+              <div className="cw-progress" aria-hidden="true">
+                <div className="cw-progress__bar" style={{ width: `${progressPct}%` }} />
+              </div>
+            </div>
+
+            {/* Scrollable content area */}
+            <div className="unit-container flex-grow-1 pt-4" style={unitContainerStyle}>
+              <SequenceContent
+                courseId={courseId}
+                gated={gated}
                 sequenceId={sequenceId}
                 unitId={unitId}
-                nextHandler={() => {
-                  logEvent('edx.ui.lms.sequence.next_selected', 'top');
-                  handleNext();
-                }}
-                onNavigate={(destinationUnitId) => {
-                  logEvent('edx.ui.lms.sequence.tab_selected', 'top', destinationUnitId);
-                  handleNavigate(destinationUnitId);
-                }}
-                previousHandler={() => {
-                  logEvent('edx.ui.lms.sequence.previous_selected', 'top');
-                  handlePrevious();
-                }}
-                {...{
-                  nextSequenceHandler,
-                  handleNavigate,
-                }}
+                unitLoadedHandler={handleUnitLoaded}
+                isOriginalUserStaff={originalUserIsStaff}
+                isEnabledOutlineSidebar={isEnabledOutlineSidebar}
+                renderUnitNavigation={renderUnitNavigation}
               />
+              {unitHasLoaded && renderUnitNavigation(false)}
             </div>
-          )}
-
-          {/* === Sticky unit header (Title + slim progress) — no extra arrows here === */}
-          <div className="cw-unit-header" role="region" aria-label="Unit header">
-            <div className="cw-unit-header__left">
-              {headerTitle ? <h1 className="cw-unit-title">{headerTitle}</h1> : null}
-            </div>
-            <div className="cw-unit-header__right" />
-            <div className="cw-progress" aria-hidden="true">
-              <div className="cw-progress__bar" style={{ width: `${progressPct}%` }} />
-            </div>
-          </div>
-
-          <div className="unit-container flex-grow-1 pt-4">
-            <SequenceContent
-              courseId={courseId}
-              gated={gated}
-              sequenceId={sequenceId}
-              unitId={unitId}
-              unitLoadedHandler={handleUnitLoaded}
-              isOriginalUserStaff={originalUserIsStaff}
-              isEnabledOutlineSidebar={isEnabledOutlineSidebar}
-              renderUnitNavigation={renderUnitNavigation}
-            />
-            {unitHasLoaded && renderUnitNavigation(false)}
           </div>
         </div>
         <NotificationsDiscussionsSidebarSlot courseId={courseId} />
@@ -232,7 +257,7 @@ const Sequence = ({
   if (sequenceStatus === 'loaded') {
     return (
       <>
-        <div className="d-flex flex-column flex-grow-1 justify-content-center">
+        <div className="d-flex flex-column flex-grow-1">
           <SequenceExamWrapper
             sequence={sequence}
             courseId={courseId}
@@ -248,7 +273,6 @@ const Sequence = ({
     );
   }
 
-  // sequence status 'failed' and any other unexpected sequence status.
   return (
     <p className="text-center py-5 mx-auto" style={{ maxWidth: '30em' }}>
       {intl.formatMessage(messages.loadFailure)}
