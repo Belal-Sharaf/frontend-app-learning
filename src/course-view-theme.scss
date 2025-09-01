@@ -1,5 +1,5 @@
 /* ========== Course View Theme (alignment + Cogens brand + gradients) ==========
-   Style-only. Targets Course Home + Courseware views.
+   Targets Course Home + Courseware views
    --------------------------------------------------------------------------- */
 
 :root {
@@ -77,6 +77,7 @@ body.course .learning-header .dropdown-toggle,
 body.courseware .learning-header .dropdown-toggle,
 body[class*="tab-page"] .learning-header .dropdown-toggle { color: #fff !important; }
 
+/* ---------- Tab page grid ---------- */
 .tab-page .container-xl {
   max-width: none !important;
   margin-left: 0 !important;
@@ -97,7 +98,7 @@ body[class*="tab-page"] .learning-header .dropdown-toggle { color: #fff !importa
   }
 }
 
-/* Tabs */
+/* ---------- Tabs ---------- */
 #courseTabsNavigation.course-tabs-navigation .nav-bar {
   border-bottom: 1px solid rgba(16,24,40,.10);
   background-image: var(--g-header-wash);
@@ -156,7 +157,7 @@ body[class*="tab-page"] .learning-header .dropdown-toggle { color: #fff !importa
   transform: scaleX(1) !important; opacity: 1 !important;
 }
 
-/* “Pick up / Resume” card */
+/* ---------- “Pick up / Resume” card ---------- */
 [class*="StartOrResumeCourseCard"],
 [class*="WelcomeMessage"] {
   background: var(--surface);
@@ -187,7 +188,7 @@ body[class*="tab-page"] .learning-header .dropdown-toggle { color: #fff !importa
   box-shadow: 0 8px 20px rgba(14,71,241,0.28);
 }
 
-/* Outline list */
+/* ---------- Outline list ---------- */
 .section-outline, [class*="section-outline"] { display: grid; gap: 12px; }
 .section-outline .section,
 [class*="section-outline"] .section {
@@ -221,7 +222,7 @@ body[class*="tab-page"] .learning-header .dropdown-toggle { color: #fff !importa
 .section-outline .section:hover,
 [class*="section-outline"] .section:hover { border-color: var(--brand-500); box-shadow: 0 0 0 3px var(--ring); }
 
-/* Right rail */
+/* ---------- Right rail ---------- */
 @media (min-width: 1200px) {
   [class*="CourseTools"],
   [class*="CourseHandouts"] { position: sticky; top: 96px; }
@@ -237,7 +238,7 @@ body[class*="tab-page"] .learning-header .dropdown-toggle { color: #fff !importa
   [class*="CourseTools"] a:hover, [class*="CourseHandouts"] a:hover { color: var(--brand-500); }
 }
 
-/* Links / focus / primary */
+/* ---------- Links / focus / primary ---------- */
 a, .link-primary { color: var(--brand-600); }
 a:hover, .link-primary:hover { color: var(--brand-500); }
 :focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
@@ -251,10 +252,10 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
   justify-content: flex-start !important;
 }
 
-/* Sticky header */
+/* Sticky unit header */
 .cw-unit-header {
   position: sticky;
-  top: 72px;
+  top: 0;                     /* stick to the top of its scroll container */
   z-index: 5;
   background: linear-gradient(180deg, #F0F5FF 0%, rgba(240,245,255,0.86) 100%);
   border: 1px solid rgba(16,24,40,.10);
@@ -326,49 +327,43 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
   padding: 6px 12px;
 }
 
+/* ===================== SCROLL/OVERLAP FIXES ===================== */
 
-
-
-
-
-/* ==== FIX: make the right pane scroll and prevent header/content overlap ==== */
-
-/* Height offset for the global header + course tabs (tweak if needed) */
-:root { --learn-top-offset: 124px; } /* ~64 header + ~48 tabs + gap */
-
-.courseware .sequence {
-  /* Turn the right column into a flex column scroller */
-  display: flex;
-  flex-direction: column;
-  min-width: 0;                    /* let children shrink instead of overflowing */
-  height: calc(100dvh - var(--learn-top-offset));
-  overflow: auto;                  /* this is now the scroll container */
-  padding-bottom: 16px;            /* keeps bottom nav from kissing the edge */
-}
-
-/* Sticky header should stick to the top of the .sequence scroller, not the page */
-.courseware .sequence .cw-unit-header { top: 0; }
-
-/* Let the content area take remaining space and actually scroll */
-.courseware .unit-container {
-  flex: 1 1 auto;                  /* grow to fill; shrink when needed */
-  min-height: 0;                   /* CRITICAL: enables scrolling in flex layouts */
-  overflow: visible;               /* content itself can handle its own overflow */
-}
-
-/* Safety: if any global CSS set an accidental overflow hidden, neutralize it */
+/* 1) Stop ancestors from clipping */
 .window-wrap,
 #content.content-wrapper,
 .courseware .sequence-container {
   overflow: visible !important;
 }
 
-/* Optional: keep the left outline narrow so the content gets more room */
-@media (min-width: 1200px) {
-  .courseware [class*="SidebarBase"],
-  .courseware [class*="CourseOutlineTray"] {
-    width: 260px !important;
-    min-width: 260px !important;
-  }
-  .sequence.w-100 { min-width: 0; }
+/* Some themes give the flex column a min-height clamp—neutralize it */
+.courseware .d-flex.flex-column.flex-grow-1 {
+  min-height: 0 !important;
+}
+
+/* 2) Make the right column a flex column with room to shrink */
+.courseware .sequence.w-100 {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;     /* prevents unintended overflow */
+}
+
+/* 3) Sticky header should stick to the pane itself */
+.courseware .sequence.w-100 .cw-unit-header {
+  position: sticky;
+  top: 0 !important;
+  z-index: 10;
+}
+
+/* 4) Make the content pane the scroll container */
+.courseware .sequence.w-100 .unit-container {
+  flex: 1 1 auto;   /* fill remaining height */
+  min-height: 0;    /* CRITICAL: enables scrolling in flex children */
+  overflow: auto;   /* real scroll happens here */
+  padding-top: 8px; /* breathing room under sticky header */
+}
+
+/* 5) The inner white card shouldn’t clip its own children */
+.courseware .unit-container > div:first-child {
+  overflow: visible;
 }
