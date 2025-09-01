@@ -325,3 +325,50 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
   border-radius: 999px !important;
   padding: 6px 12px;
 }
+
+
+
+
+
+
+/* ==== FIX: make the right pane scroll and prevent header/content overlap ==== */
+
+/* Height offset for the global header + course tabs (tweak if needed) */
+:root { --learn-top-offset: 124px; } /* ~64 header + ~48 tabs + gap */
+
+.courseware .sequence {
+  /* Turn the right column into a flex column scroller */
+  display: flex;
+  flex-direction: column;
+  min-width: 0;                    /* let children shrink instead of overflowing */
+  height: calc(100dvh - var(--learn-top-offset));
+  overflow: auto;                  /* this is now the scroll container */
+  padding-bottom: 16px;            /* keeps bottom nav from kissing the edge */
+}
+
+/* Sticky header should stick to the top of the .sequence scroller, not the page */
+.courseware .sequence .cw-unit-header { top: 0; }
+
+/* Let the content area take remaining space and actually scroll */
+.courseware .unit-container {
+  flex: 1 1 auto;                  /* grow to fill; shrink when needed */
+  min-height: 0;                   /* CRITICAL: enables scrolling in flex layouts */
+  overflow: visible;               /* content itself can handle its own overflow */
+}
+
+/* Safety: if any global CSS set an accidental overflow hidden, neutralize it */
+.window-wrap,
+#content.content-wrapper,
+.courseware .sequence-container {
+  overflow: visible !important;
+}
+
+/* Optional: keep the left outline narrow so the content gets more room */
+@media (min-width: 1200px) {
+  .courseware [class*="SidebarBase"],
+  .courseware [class*="CourseOutlineTray"] {
+    width: 260px !important;
+    min-width: 260px !important;
+  }
+  .sequence.w-100 { min-width: 0; }
+}
