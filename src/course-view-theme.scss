@@ -193,3 +193,43 @@ html, body{ overflow-y:auto!important; min-height:100%; }
 [class*="UnitNavigation"] .btn, [class*="UnitNavigation"] button{
   min-height:36px; border-radius:999px!important; padding:6px 12px;
 }
+
+
+
+/* =========================
+   COURSEWARE SAFETY OVERRIDES (append at end)
+   ========================= */
+
+/* Re-enable page scrolling if a global layout disabled it */
+.window-wrap { overflow: visible !important; }
+html, body { height: auto !important; overflow-y: auto !important; }
+
+/* Ensure courseware pages use full width (avoid stray <main> clamps from other pages) */
+body:not(.is-logistration):not(.is-landing) main#main {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Defuse container caps that can shrink the layout in courseware */
+body.view-in-course main#main *[class*='container'],
+body.course main#main *[class*='container'],
+body.courseware main#main *[class*='container'] {
+  max-width: 100% !important;
+}
+
+/* Make .cw-scroll the ONLY scroll container (pairs with Sequence.jsx) */
+.cw-scroll {
+  min-height: 0 !important;
+  height: calc(100dvh - var(--cw-top-ui)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The inner content area should not create a second scroller */
+.courseware .sequence.w-100 .unit-container {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  overflow: visible !important; /* scrolling is handled by .cw-scroll */
+}
+

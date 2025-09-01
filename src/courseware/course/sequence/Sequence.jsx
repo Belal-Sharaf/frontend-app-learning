@@ -26,7 +26,7 @@ import HiddenAfterDue from './hidden-after-due';
 import { UnitNavigation } from './sequence-navigation';
 import SequenceContent from './SequenceContent';
 
-const CW_TOP_UI_DEFAULT = '128px'; // header + tabs estimate; CSS var fallback below
+const CW_TOP_UI_DEFAULT = '128px'; // header + tabs estimate fallback
 
 const Sequence = ({
   unitId,
@@ -51,6 +51,21 @@ const Sequence = ({
   const sequenceStatus = useSelector(state => state.courseware.sequenceStatus);
   const sequenceMightBeUnit = useSelector(state => state.courseware.sequenceMightBeUnit);
   const { enableNavigationSidebar: isEnabledOutlineSidebar } = useSelector(getCoursewareOutlineSidebarSettings);
+
+  // Auto-measure header + tab heights so the inner scroller fills the viewport exactly.
+  useEffect(() => {
+    const header = document.querySelector('header.global-header');
+    const tabs = document.getElementById('courseTabsNavigation');
+    const topUi =
+      (header?.offsetHeight || 0) +
+      (tabs?.offsetHeight || 0) +
+      16; // tiny buffer
+    const px = topUi ? `${topUi}px` : null;
+    if (px) {
+      document.documentElement.style.setProperty('--cw-top-ui', px);
+    }
+    // do not attempt cleanup/reset; harmless to leave var in place
+  }, []);
 
   const handleNext = () => {
     const nextIndex = sequence.unitIds.indexOf(unitId) + 1;
@@ -134,7 +149,7 @@ const Sequence = ({
 
   const gated = sequence && sequence.gatedContent !== undefined && sequence.gatedContent.gated;
 
-  // Header title + progress (safe fallbacks)
+  // Header title + progress
   const headerTitle = (unit && (unit.displayName || unit.title || unit.name))
     || (sequence && (sequence.displayName || sequence.title || sequence.name))
     || (section && (section.displayName || section.title || section.name))
@@ -161,26 +176,28 @@ const Sequence = ({
     />
   );
 
-  // ---- SCROLL CONTAINER + STICKY HEADER (inline styles win over conflicting CSS) ----
+  // Robust scroll container regardless of global CSS
   const scrollWrapperStyle = {
     display: 'flex',
     flexDirection: 'column',
     minHeight: 0, // critical for flex children to be scrollable
-    height: `calc(100dvh - var(--cw-top-ui, ${CW_TOP_UI_DEFAULT}))`, // use CSS var or fallback
-    overflow: 'auto',
+    height: `calc(100dvh - var(--cw-top-ui, ${CW_TOP_UI_DEFAULT}))`,
+    overflowY: 'auto',
+    overflowX: 'hidden',
     WebkitOverflowScrolling: 'touch',
   };
 
   const unitContainerStyle = {
     flex: '1 1 auto',
-    minHeight: 0,         // allow inner content to scroll
-    overflow: 'visible',  // xblocks manage their own overflow
+    minHeight: 0,
+    overflow: 'visible',
   };
 
   const stickyHeaderStyle = {
     position: 'sticky',
     top: 0,
     zIndex: 10,
+    background: 'transparent',
   };
 
   const defaultContent = (
@@ -194,7 +211,6 @@ const Sequence = ({
         />
         <CourseOutlineSidebarSlot />
         <div className="sequence w-100" style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-          {/* Make the right column itself a scroll container */}
           <div className="cw-scroll" style={scrollWrapperStyle}>
             {!isEnabledOutlineSidebar && (
               <div className="sequence-navigation-container">
