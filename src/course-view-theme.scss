@@ -28,6 +28,9 @@
   --gutter:   24px;
   --rail-w:   320px;
 
+  /* Courseware pane offset (header + tabs + top padding) */
+  --cw-top-ui: 128px; /* tweak 120–140px to fit your theme */
+
   /* Gradients */
   --g-primary:      linear-gradient(90deg, var(--brand-600) 0%, var(--brand-500) 100%);
   --g-primary-rev:  linear-gradient(90deg, var(--brand-500) 0%, var(--brand-600) 100%);
@@ -247,21 +250,30 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
 
 /* ===================== Courseware layout polish ===================== */
 
-/* Let the overall column stack scroll normally (undo vertical centering clamp) */
+/* Undo vertical centering clamp if any theme does it */
 .courseware .d-flex.flex-column.flex-grow-1.justify-content-center {
   justify-content: flex-start !important;
 }
 
-/* Sticky unit header */
+/* Make the right column a fixed-height flex column */
+.courseware .sequence.w-100 {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: calc(100dvh - var(--cw-top-ui)); /* <-- provides a height so overflow can work */
+  overflow: hidden; /* child (.unit-container) will scroll */
+}
+
+/* Sticky unit header pinned to this pane */
 .cw-unit-header {
   position: sticky;
-  top: 0;                     /* stick to the top of its scroll container */
-  z-index: 5;
+  top: 0;               /* stick to the top of .sequence, not the page */
+  z-index: 10;
   background: linear-gradient(180deg, #F0F5FF 0%, rgba(240,245,255,0.86) 100%);
   border: 1px solid rgba(16,24,40,.10);
   border-radius: 12px;
   padding: 10px 14px;
-  margin: 8px 0 16px;
+  margin: 8px 0 12px;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -281,7 +293,7 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
 .cw-progress { grid-column: 1 / -1; height: 2px; background: rgba(14,71,241,0.18); border-radius: 2px; overflow: hidden; }
 .cw-progress__bar { height: 100%; background-image: var(--g-primary); transition: width .25s ease; }
 
-/* === IMPORTANT: Do NOT style the outer row (.sequence-container) like a card === */
+/* Outer row should NOT be a card */
 .sequence-container {
   max-width: none !important;
   margin: 0 !important;
@@ -291,26 +303,24 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
   padding: 0 !important;
 }
 
-/* Give the actual unit content a card look, not the whole row */
+/* The scrolling content pane */
+.courseware .sequence.w-100 .unit-container {
+  flex: 1 1 auto;
+  min-height: 0;           /* CRITICAL: allows the child to actually scroll */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: 8px;
+}
+
+/* Remove the extra "card on the first child" that caused the double-white boxes */
 .unit-container > div:first-child {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  padding: clamp(18px, 2vw, 28px);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
 }
 
-/* Wider content; slimmer modules */
-@media (min-width: 1200px) {
-  .courseware [class*="SidebarBase"],
-  .courseware [class*="CourseOutlineTray"] {
-    width: 260px !important;
-    min-width: 260px !important;
-  }
-  .sequence.w-100 { min-width: 0; }
-}
-
-/* Responsive media inside units */
+/* Media inside units */
 .unit-container img,
 .unit-container video,
 .unit-container iframe {
@@ -327,43 +337,19 @@ a:hover, .link-primary:hover { color: var(--brand-500); }
   padding: 6px 12px;
 }
 
-/* ===================== SCROLL/OVERLAP FIXES ===================== */
-
-/* 1) Stop ancestors from clipping */
+/* ===================== Safety unclamps ===================== */
 .window-wrap,
 #content.content-wrapper,
-.courseware .sequence-container {
-  overflow: visible !important;
-}
+.courseware .sequence-container { overflow: visible !important; }
 
-/* Some themes give the flex column a min-height clamp—neutralize it */
-.courseware .d-flex.flex-column.flex-grow-1 {
-  min-height: 0 !important;
-}
+.courseware .d-flex.flex-column.flex-grow-1 { min-height: 0 !important; }
 
-/* 2) Make the right column a flex column with room to shrink */
-.courseware .sequence.w-100 {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;     /* prevents unintended overflow */
-}
-
-/* 3) Sticky header should stick to the pane itself */
-.courseware .sequence.w-100 .cw-unit-header {
-  position: sticky;
-  top: 0 !important;
-  z-index: 10;
-}
-
-/* 4) Make the content pane the scroll container */
-.courseware .sequence.w-100 .unit-container {
-  flex: 1 1 auto;   /* fill remaining height */
-  min-height: 0;    /* CRITICAL: enables scrolling in flex children */
-  overflow: auto;   /* real scroll happens here */
-  padding-top: 8px; /* breathing room under sticky header */
-}
-
-/* 5) The inner white card shouldn’t clip its own children */
-.courseware .unit-container > div:first-child {
-  overflow: visible;
+/* Keep left outline modest so content has space */
+@media (min-width: 1200px) {
+  .courseware [class*="SidebarBase"],
+  .courseware [class*="CourseOutlineTray"] {
+    width: 260px !important;
+    min-width: 260px !important;
+  }
+  .sequence.w-100 { min-width: 0; }
 }
